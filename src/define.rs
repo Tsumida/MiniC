@@ -2,9 +2,9 @@
 /// Tiny c 词法约定
 /// 仅允许整数类型，不允许实数类型
 /// 标识符由大小写英文字母组成，最多52个。其识别按最长匹配原则
-/// 整数后紧跟非数字，或标识符后紧跟非字母认为是一个新Token开始
+/// 整数后紧跟非数字，或标识符后紧跟非字母认为是一个新Terminal开始
 /// 由{ }括起来符号串都认为是注释部分，该部分在词法分析时被过滤掉
-/// 识别出的Token由两个变量：currentToken，tokenString识别，其中currentToken代表Token的类属，为一个名为Terminal的枚举类型，在文件globals.h中定义；tokenString代表Token在程序中出现的形式，即其本来面目。例如整数10的currentToken值为NUM，而tokenString值为‘10’；标识符i的currentToken值为ID，而tokenString值为‘i’
+/// 识别出的Terminal由两个变量：currentTerminal，TerminalString识别，其中currentTerminal代表Terminal的类属，为一个名为Terminal的枚举类型，在文件globals.h中定义；TerminalString代表Terminal在程序中出现的形式，即其本来面目。例如整数10的currentTerminal值为NUM，而TerminalString值为‘10’；标识符i的currentTerminal值为ID，而TerminalString值为‘i’
 pub mod SymbolDef{
     use std::error::Error;
     use std::fmt::{self, Display, Formatter};
@@ -63,14 +63,14 @@ pub mod SymbolDef{
 
     impl Display for SymbolError {
         fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-            write!(f, "invalid token for Symbol")
+            write!(f, "invalid Terminal for Symbol")
         }
     }
 
     // This is important for other errors to wrap this one.
     impl Error for SymbolError {
         fn description(&self) -> &str {
-            "Error in symbol, invalid token"
+            "Error in symbol, invalid Terminal"
         }
 
         fn cause(&self) -> Option<&dyn Error> {
@@ -84,14 +84,14 @@ pub mod SymbolDef{
 
     impl Display for KeywordError {
         fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-            write!(f, "invalid token")
+            write!(f, "invalid Terminal")
         }
     }
 
     // This is important for other errors to wrap this one.
     impl Error for KeywordError {
         fn description(&self) -> &str {
-            "invalid token"
+            "invalid Terminal"
         }
 
         fn cause(&self) -> Option<&dyn Error> {
@@ -133,8 +133,12 @@ pub mod SymbolDef{
         }
     }
 
+    #[derive(Debug, Clone, Copy)]
+    pub struct TerminalError;
+
     #[derive(Debug, Clone, PartialEq, Eq, Hash)]
     pub enum Terminal {
+        // ------------------------------ Terminal
         Keyword(Keyword),
         // include +-*/&^=
         SpecialSymbol(SpecialSymbol),
@@ -143,6 +147,9 @@ pub mod SymbolDef{
         NumberLiteral,
         //StringLiteral(String),
         Identifier,
+        Epsilon, // e
+        END, // $
+
     }
 
     impl Display for Terminal{
@@ -152,7 +159,7 @@ pub mod SymbolDef{
     }
 
     impl FromStr for Terminal{
-        type Err = KeywordError;
+        type Err = TerminalError;
         fn from_str(s: &str) -> Result<Self, Self::Err> {
             match s {
                 "if" => Ok(Terminal::Keyword(Keyword::If)),
@@ -181,13 +188,14 @@ pub mod SymbolDef{
                 ";" => Ok(Terminal::SpecialSymbol(SpecialSymbol::Semicolon)),
                 // id
                 "id" => Ok(Terminal::Identifier),
-                _ => Err(KeywordError),
+                _ => Err(TerminalError),
             }
         }
     }
 
-    #[derive(Debug, PartialEq, Eq, Hash, Clone)]
-    pub enum NonTerminal{
+    #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+    pub enum NonTerminal {
+        // ------------------------------ NonTerminal
         StmtSeq,
         Stmt,
         IfStmt,
@@ -197,17 +205,51 @@ pub mod SymbolDef{
         ForStmt,
         ReadStmt,
         WriteStmt,
-
-        //Assign, // :=
-        //AddAssign, // +=
-
         Exp,
-        //CmpOp, // =, <
-        //AddOp, // +, -
-        //MulOp, // *, /, ^
         SimpleExp, 
         Term, 
         Factor,
     }
+    
+    #[derive(Debug, Clone, Copy)]
+    pub struct NonTerminalError;
+
+    impl Display for NonTerminal{
+        fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+            write!(f, "{:?}", self)
+        }
+    }
+
+    impl FromStr for NonTerminal{
+        type Err = NonTerminalError;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            match s {
+                "stmt_sequece" => Ok(NonTerminal::StmtSeq),
+                "statement" => Ok(NonTerminal::Stmt),
+                "if_stmt" => Ok(NonTerminal::IfStmt),
+                "repeat_stmt" => Ok(NonTerminal::RepeatStmt),
+                "while_stmt" => Ok(NonTerminal::WhileStmt),
+                "dowhile_stmt" => Ok(NonTerminal::DoWhileStmt),
+                "for_stmt" => Ok(NonTerminal::ForStmt),
+                "read_stmt" => Ok(NonTerminal::ReadStmt),
+                "write_stmt" => Ok(NonTerminal:: WriteStmt),
+                "exp" => Ok(NonTerminal::Exp),
+                "comparison_op" => Ok(NonTerminal::SimpleExp), 
+                "simple_exp" => Ok(NonTerminal::Term), 
+                "factor" => Ok(NonTerminal::Factor),
+                _ => Err(NonTerminalError),
+            }
+        }
+    }
+
+
+
+    #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+    pub enum Token {
+        NonTerminal(NonTerminal),
+        Terminal(Terminal),
+    }
+
+
 
 }

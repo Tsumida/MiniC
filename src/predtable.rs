@@ -27,7 +27,6 @@ fn gen_predtable() -> PredTable{
 }
 
 fn parse(ts: &Vec<String>){
-
     let mut stack:Vec<String> = vec!["$".to_string(), "E".to_string()];
     // E是开始符号
     let table: PredTable = gen_predtable();
