@@ -1,0 +1,23 @@
+stmt_sequece -> statement {; statement}
+statement -> if_stmt | repeat_stmt | assign_smt | read_stmt | write_stmt | while_stmt | dowhile_stmt | for_stmt
+if_stmt -> if (exp) stmt_sequence |
+        -> if (exp) stmt_sequence else stmt_sequence
+repeat_stmt -> repeat stmt_sequence until exp
+assign_stmt -> identifier assign_op exp
+assign_op -> :=|+=
+read_stmt -> read identifier
+write_stmt -> write exp
+exp -> simple_exp [comparison_op simple_exp]
+comparison_op -> <|=
+simple_exp -> term{ add_op term}
+add_op -> +|-
+term -> factor{ mul_op factor}
+mul_op -> *|/|**
+factor -> (exp) | number | identifier
+while_stmt -> while exp do stmt_sequence endwhile
+dowhile_stmt -> do stmt_sequence while(exp);
+for_stmt -> for identifier := simple_exp to simple_exp do stmt_sequence enddo | 
+         -> for identifier := simple_exp to simple_exp do stmt_sequence enddo
+
+		
+
