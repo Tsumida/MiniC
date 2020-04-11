@@ -1,6 +1,5 @@
 # -*- coding: UTF-8 -*-
-import re
-from enum import Enum, unique
+from enum import Enum
 
 
 class TokenType(Enum):
@@ -35,28 +34,32 @@ class TokenType(Enum):
 
 
 class Token:
-    def __init__(self, name, type):
+    def __init__(self, name, token_type):
         self.name = name
-        self.type = type
+        self.type = token_type
+
+    def __repr__(self):
+        # 打印成str, 方便debug
+        return f"Token({self.name}, {self.type})" # f字符串要求py3.5以上
 
 
 # 字母
 letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+-*/<>()[]{}!="
 
 # 保留字
-keyWord = {'if': TokenType.IF, 'else': TokenType.ELSE,
+KEYWORD = {'if': TokenType.IF, 'else': TokenType.ELSE,
            'int': TokenType.INT, 'return': TokenType.RETURN,
            'void': TokenType.VOID, "while": TokenType.WHILE
            }
 
 # 运算符
-operator = {'+': TokenType.PLUS, '-': TokenType.MINUS, '*': TokenType.TIMES,
+OPERATOR = {'+': TokenType.PLUS, '-': TokenType.MINUS, '*': TokenType.TIMES,
             '/': TokenType.OVER, '<': TokenType.LT, '<=': TokenType.LE,
             '>': TokenType.RT, '>=': TokenType.RE, '==': TokenType.EQ,
             '!=': TokenType.NEQ, '=': TokenType.ASSIGN,
             }
 # 界符
-delimiters = {'{': TokenType.LBRACE, '}': TokenType.RBRACE,
+DELIMITER = {'{': TokenType.LBRACE, '}': TokenType.RBRACE,
               '[': TokenType.LBRACKET, ']': TokenType.RBRACKET,
               '(': TokenType.LPAREN, ')': TokenType.RPAREN,
               ';': TokenType.SEMI, ',': TokenType.COMMA,
