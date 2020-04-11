@@ -1,9 +1,10 @@
 # std 库
 import re
 from unittest import TestCase
-from typing import List # 给IDE提供类型提示, 无实质影响
+from typing import List  # 给IDE提供类型提示, 无实质影响
 # 自定义库
-from src.sym_def import *
+from sym_def import *
+
 
 def filterResource(oldFileName):
     """
@@ -23,6 +24,7 @@ def filterResource(oldFileName):
         else:
             ncode += line + '\n'
     return ncode
+
 
 def scan(code: str):
     """
@@ -44,7 +46,7 @@ def scan(code: str):
             #    #语言中不存在这个字符 抛出错误
             #    continue
             word += line[i]
-            if line[i] == ' ' or line[i] in DELIMITER or line[i] in OPERATOR:
+            if line[i] == ' ' or line[i] == '!' or line[i] == '\n' or line[i] in DELIMITER or line[i] in OPERATOR:
                 if word[0].isalpha():
                     word = word[:-1]
                     if word in KEYWORD:
@@ -59,16 +61,19 @@ def scan(code: str):
                 if line[i] in DELIMITER:
                     # 是界符
                     wordTable.append(Token(line[i], DELIMITER[line[i]]))
-                elif line[i] in OPERATOR:
+                elif line[i] in OPERATOR or line[i] == '!':
                     # 是运算符
                     s = line[i] + line[i + 1]
                     if s in OPERATOR:
                         # 贪心匹配占两个字节的运算符
                         wordTable.append(Token(s, OPERATOR[s]))
                         i += 1
-                    else:
+                    elif line[i] in OPERATOR:
                         # 只占一个字节的运算符
                         wordTable.append(Token(line[i], OPERATOR[line[i]]))
+                    # else:
+                    # print("UNKNOWN TOKEN: ",line[i] )
+
                 word = ''
             i += 1
         token += wordTable
@@ -76,9 +81,11 @@ def scan(code: str):
     print(token)
     return token
 
+
 def lex(codeFile):
     code = filterResource(codeFile)
     return scan(code)
+
 
 def main():
     token_array = lex("r.txt")
@@ -87,6 +94,7 @@ def main():
     for u in token_array:
         f1.write("{: <7} {}\n".format(u.name, u.type))
     f1.close()
+
 
 # main()
 
@@ -112,30 +120,18 @@ class TestScan(TestCase):
 
         test(
             "assignment",
-            "a = b",
-            [Token("a", TokenType.ID), Token("=", TokenType.ASSIGN), Token("b", TokenType.ID)]
+            "a != b",
+            [Token("a", TokenType.ID), Token("!=", TokenType.NEQ), Token("b", TokenType.ID), Token("$", TokenType.EOF)]
         )
 
         test(
             "if statement",
-            "if ( a == b ) return b ;",
+            "if ( a != b ) return b ;",
             [
-                Token("if", TokenType.IF),
-                Token("a", TokenType.ID), Token("==", TokenType.EQ), Token("b", TokenType.ID),
+                Token("if", TokenType.IF), Token("(", TokenType.LPAREN),
+                Token("a", TokenType.ID), Token("!=", TokenType.NEQ), Token("b", TokenType.ID),
+                Token(")", TokenType.RPAREN),
                 Token("return", TokenType.RETURN), Token("b", TokenType.ID), Token(";", TokenType.SEMI),
+                Token("$", TokenType.EOF)
             ]
         )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
