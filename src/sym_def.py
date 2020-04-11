@@ -40,7 +40,10 @@ class Token:
 
     def __repr__(self):
         # 打印成str, 方便debug
-        return f"Token({self.name}, {self.type})" # f字符串要求py3.5以上
+        return f"Token({self.name}, {self.type})"  # f字符串要求py3.5以上
+
+    def __eq__(self, other):
+        return self.name == other.name and self.type == other.type
 
 
 # 字母
@@ -60,7 +63,7 @@ OPERATOR = {'+': TokenType.PLUS, '-': TokenType.MINUS, '*': TokenType.TIMES,
             }
 # 界符
 DELIMITER = {'{': TokenType.LBRACE, '}': TokenType.RBRACE,
-              '[': TokenType.LBRACKET, ']': TokenType.RBRACKET,
-              '(': TokenType.LPAREN, ')': TokenType.RPAREN,
-              ';': TokenType.SEMI, ',': TokenType.COMMA,
-              }
+             '[': TokenType.LBRACKET, ']': TokenType.RBRACKET,
+             '(': TokenType.LPAREN, ')': TokenType.RPAREN,
+             ';': TokenType.SEMI, ',': TokenType.COMMA,
+             }
