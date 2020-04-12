@@ -31,7 +31,6 @@ class TokenType(Enum):
     ID = 26
     NUM = 27
 
-
 class Token:
     def __init__(self, name, token_type):
         self.name = name
@@ -118,4 +117,41 @@ def create_nts():
         for index, nt in enumerate(f.readlines()):
             print("{} = {},".format(nt.strip(), index))
 
-# create_nts()
+class ActionException(Exception):
+    def __init__(self, st: int, nt, msg: str):
+        self.nt = nt
+        self.st = st
+        self.msg = msg
+
+    def __repr__(self):
+        return f"ActionException({self.st}, {self.nt}):{self.msg}"
+
+class ActionTable:
+    def __init__(self):
+        self.table = dict()
+
+    def add_nt(self, st: int, nt: str, op: int, next_st: int):
+        self.table.setdefault((st, nt), (op, next_st))
+
+    def get_next_action(self, st: int, nt: str):
+        try:
+            return self.table[(st, nt)]
+        except KeyError:
+            raise ActionException(st, nt, "No such entry")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
