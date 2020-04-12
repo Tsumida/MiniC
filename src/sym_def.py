@@ -31,6 +31,8 @@ class TokenType(Enum):
     ID = 26
     NUM = 27
 
+    ACCEPT = 28
+
 class Token:
     def __init__(self, name, token_type):
         self.name = name
