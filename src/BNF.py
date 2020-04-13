@@ -1,7 +1,7 @@
 from sym_def import BNF, TokenType, NonTerminal
 
 expressionTable = [
-    BNF(-1, (-1)),
+    BNF(-1, (-1)),#占用YACC第0条生成式的下标
     BNF(
         NonTerminal.program,
         (
