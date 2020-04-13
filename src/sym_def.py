@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 from enum import Enum
 
+
 class TokenType(Enum):
     ERROR = -1
     EOF = 0  # EOF
@@ -31,7 +32,6 @@ class TokenType(Enum):
     ID = 26
     NUM = 27
 
-    ACCEPT = 28
 
 class Token:
     def __init__(self, name, token_type):
@@ -40,7 +40,7 @@ class Token:
 
     def __repr__(self):
         # 打印成str, 方便debug
-        return f"Token({self.name}, {self.type})" # f字符串要求py3.5以上
+        return f"Token({self.name}, {self.type})"  # f字符串要求py3.5以上
 
     def __eq__(self, other):
         return self.name == other.name and self.type == other.type
@@ -50,33 +50,29 @@ class Token:
 letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+-*/<>()[]{}!="
 
 # 保留字
-KEYWORD = {
-    'if': TokenType.IF, 'else': TokenType.ELSE,
-    'int': TokenType.INT, 'return': TokenType.RETURN,
-    'void': TokenType.VOID, "while": TokenType.WHILE
-}
+KEYWORD = {'if': TokenType.IF, 'else': TokenType.ELSE,
+           'int': TokenType.INT, 'return': TokenType.RETURN,
+           'void': TokenType.VOID, "while": TokenType.WHILE
+           }
 
 # 运算符
-OPERATOR = {
-    '+': TokenType.PLUS, '-': TokenType.MINUS, '*': TokenType.TIMES,
-    '/': TokenType.OVER, '<': TokenType.LT, '<=': TokenType.LE,
-    '>': TokenType.RT, '>=': TokenType.RE, '==': TokenType.EQ,
-    '!=': TokenType.NEQ, '=': TokenType.ASSIGN,
-}
-
+OPERATOR = {'+': TokenType.PLUS, '-': TokenType.MINUS, '*': TokenType.TIMES,
+            '/': TokenType.OVER, '<': TokenType.LT, '<=': TokenType.LE,
+            '>': TokenType.RT, '>=': TokenType.RE, '==': TokenType.EQ,
+            '!=': TokenType.NEQ, '=': TokenType.ASSIGN,
+            }
 # 界符
-DELIMITER = {
-    '{': TokenType.LBRACE, '}': TokenType.RBRACE,
-    '[': TokenType.LBRACKET, ']': TokenType.RBRACKET,
-    '(': TokenType.LPAREN, ')': TokenType.RPAREN,
-    ';': TokenType.SEMI, ',': TokenType.COMMA,
-}
-
+DELIMITER = {'{': TokenType.LBRACE, '}': TokenType.RBRACE,
+             '[': TokenType.LBRACKET, ']': TokenType.RBRACKET,
+             '(': TokenType.LPAREN, ')': TokenType.RPAREN,
+             ';': TokenType.SEMI, ',': TokenType.COMMA,
+             }
 
 # op for LR
 SHIFT = 0
 REDUCE = 1
 ACCEPT = 2
+
 
 class NonTerminal(Enum):
     additive_expression = 0,
@@ -110,16 +106,15 @@ class NonTerminal(Enum):
     var_declaration = 28,
 
 
-
 def create_nts():
     """
     Python没有宏
     :return:
     """
-
-    with open("./non_terminals.txt", "r") as f:
+    with open("./syntax.txt", "r") as f:
         for index, nt in enumerate(f.readlines()):
-           print("{} = {},".format(nt.strip(), index))
+            print("{} = {},".format(nt.strip(), index))
+
 
 class ActionException(Exception):
     def __init__(self, st: int, nt, msg: str):
@@ -129,6 +124,7 @@ class ActionException(Exception):
 
     def __repr__(self):
         return f"ActionException({self.st}, {self.nt}):{self.msg}"
+
 
 class ActionTable:
     def __init__(self):
@@ -144,14 +140,26 @@ class ActionTable:
             raise ActionException(st, nt, "No such entry")
 
 
+class GotoKey:
+    def __init__(self, stateID, tokenType):
+        self.stateID = stateID
+        self.tokenType = tokenType
 
 
+class ActionKey:
+    def __init__(self, stateID, tokenType):
+        self.stateID = stateID
+        self.tokenType = tokenType
 
 
+class ActionVal:
+    def __init__(self, action, num):
+        self.action = action
+        self.num = num
 
 
-
-
-
-
+class BNF:
+    def __init__(self, symbol, expression):
+        self.symbol = symbol
+        self.expression = expression
 
