@@ -122,43 +122,20 @@ class TestUtils(TestCase):
 
     @skipIf(DEBUG == 0, "debug")
     def test_proc_lr_table(self):
-        case = """
-state 0
-    $accept : . program $end
-    
-    INT  shift 1
-    VOID  shift 2
-    LBRACE  shift 3
-
-    program  goto 4
-    declarationlist  goto 5
-    declaration  goto 6
-    vardeclaration  goto 7
-    fundeclaration  goto 8
-    typespecifier  goto 9
-    compoundstmt  goto 10
-
-
-state 1
-    typespecifier : INT .  (8)
-
-    .  reduce 8"""
-        _ = proc_lr_table(case)
-
         # 对 lr table 进行测试
         with open("./lr_table.txt", "r") as f:
             text = f.read()
             results = proc_lr_table(text)
-
+            """
             for ele in results:
                 print("st={}\n\taction={}\n\tgoto={}\n\treduce={}".format(
                     ele.state_now, ele.action_table, ele.goto_table, ele.reduce_table
                 ))
-
+            """
             assert len(results) == 101, f"Err: len={len(results)}"
 
-            # state 42： ID  reduce  9
-            oup = results[42].reduce_table.get(TokenType.ID)
+            # state 14： ID  reduce  9
+            oup = results[14].reduce_table.get(TokenType.ID)
             assert oup == 9, f"Err: expected={9}, got={oup}"
 
 

@@ -79,35 +79,36 @@ REDUCE = 1
 ACCEPT = 2
 
 class NonTerminal(Enum):
-    additiveexpression = 0,
+    additive_expression = 0,
     addop = 1,
-    arglist = 2,
+    arg_list = 2,
     args = 3,
     call = 4,
-    compoundstmt = 5,
+    compound_stmt = 5,
     declaration = 6,
-    declarationlist = 7,
+    declaration_list = 7,
     expression = 8,
-    expressionstmt = 9,
+    expression_stmt = 9,
     factor = 10,
-    fundeclaration = 11,
-    iterationstmt = 12,
-    localdeclarations = 13,
+    fun_declaration = 11,
+    iteration_stmt = 12,
+    local_declarations = 13,
     mulop = 14,
     param = 15,
-    paramlist = 16,
+    param_list = 16,
     params = 17,
     program = 18,
     relop = 19,
-    returnstmt = 20,
-    selectionstmt = 21,
-    simpleexpression = 22,
+    return_stmt = 20,
+    selection_stmt = 21,
+    simple_expression = 22,
     statement = 23,
-    statementlist = 24,
+    statement_list = 24,
     term = 25,
-    typespecifier = 26,
+    type_specifier = 26,
     var = 27,
-    vardeclaration = 28,
+    var_declaration = 28,
+
 
 
 def create_nts():
@@ -115,9 +116,10 @@ def create_nts():
     Python没有宏
     :return:
     """
-    with open("./syntax.txt", "r") as f:
+
+    with open("./non_terminals.txt", "r") as f:
         for index, nt in enumerate(f.readlines()):
-            print("{} = {},".format(nt.strip(), index))
+           print("{} = {},".format(nt.strip(), index))
 
 class ActionException(Exception):
     def __init__(self, st: int, nt, msg: str):
@@ -140,10 +142,6 @@ class ActionTable:
             return self.table[(st, nt)]
         except KeyError:
             raise ActionException(st, nt, "No such entry")
-
-
-
-
 
 
 
