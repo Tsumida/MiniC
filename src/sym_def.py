@@ -68,10 +68,12 @@ DELIMITER = {'{': TokenType.LBRACE, '}': TokenType.RBRACE,
              ';': TokenType.SEMI, ',': TokenType.COMMA,
              }
 
+
 # op for LR
-SHIFT = 0
-REDUCE = 1
-ACCEPT = 2
+class Operation(Enum):
+    SHIFT = 0
+    REDUCE = 1
+    ACCEPT = -1
 
 
 class NonTerminal(Enum):
@@ -162,4 +164,3 @@ class BNF:
     def __init__(self, symbol, expression):
         self.symbol = symbol
         self.expression = expression
-
