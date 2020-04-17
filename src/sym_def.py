@@ -4,6 +4,7 @@ from enum import Enum
 
 class TokenType(Enum):
     ERROR = -1
+    OTHERS = -0x3f3f3f3f
     EOF = 0  # EOF
     IF = 1
     ELSE = 2
@@ -77,35 +78,35 @@ class Operation(Enum):
 
 
 class NonTerminal(Enum):
-    additive_expression = 0,
-    addop = 1,
-    arg_list = 2,
-    args = 3,
-    call = 4,
-    compound_stmt = 5,
-    declaration = 6,
-    declaration_list = 7,
-    expression = 8,
-    expression_stmt = 9,
-    factor = 10,
-    fun_declaration = 11,
-    iteration_stmt = 12,
-    local_declarations = 13,
-    mulop = 14,
-    param = 15,
-    param_list = 16,
-    params = 17,
-    program = 18,
-    relop = 19,
-    return_stmt = 20,
-    selection_stmt = 21,
-    simple_expression = 22,
-    statement = 23,
-    statement_list = 24,
-    term = 25,
-    type_specifier = 26,
-    var = 27,
-    var_declaration = 28,
+    additive_expression = 0
+    addop = 1
+    arg_list = 2
+    args = 3
+    call = 4
+    compound_stmt = 5
+    declaration = 6
+    declaration_list = 7
+    expression = 8
+    expression_stmt = 9
+    factor = 10
+    fun_declaration = 11
+    iteration_stmt = 12
+    local_declarations = 13
+    mulop = 14
+    param = 15
+    param_list = 16
+    params = 17
+    program = 18
+    relop = 19
+    return_stmt = 20
+    selection_stmt = 21
+    simple_expression = 22
+    statement = 23
+    statement_list = 24
+    term = 25
+    type_specifier = 26
+    var = 27
+    var_declaration = 28
 
 
 def create_nts():
@@ -143,9 +144,15 @@ class ActionTable:
 
 
 class GotoKey:
-    def __init__(self, stateID, tokenType):
+    def __init__(self, stateID, nonTerminalType):
         self.stateID = stateID
-        self.tokenType = tokenType
+        self.nonTerminalType = nonTerminalType
+
+    def __eq__(self, other):
+        return self.stateID == other.stateID and self.nonTerminalType == other.nonTerminalType
+
+    def __hash__(self):
+        return self.stateID * 1000000000 + self.nonTerminalType.value
 
 
 class ActionKey:
@@ -153,10 +160,16 @@ class ActionKey:
         self.stateID = stateID
         self.tokenType = tokenType
 
+    def __eq__(self, other):
+        return self.stateID == other.stateID and self.tokenType == other.tokenType
+
+    def __hash__(self):
+        return self.stateID * 1000000000 + self.tokenType.value
+
 
 class ActionVal:
-    def __init__(self, action, num):
-        self.action = action
+    def __init__(self, operation, num):
+        self.operation = operation
         self.num = num
 
 
