@@ -1,14 +1,14 @@
 from unittest import TestCase, skipIf
 
-from src.sym_def import *
+from sym_def import *
 
 
 class ProcResult:
     def __init__(self, st: int):
         self.state_now = st
         self.action_table = dict()  # K = TokenType, V = int
-        self.goto_table = dict()    # K = NonTerminal, V = int
-        self.reduce_table = dict()        # . reduce st --> (None, st); ID reduce st --> (TokenType.ID, st)
+        self.goto_table = dict()  # K = NonTerminal, V = int
+        self.reduce_table = dict()  # . reduce st --> (None, st); ID reduce st --> (TokenType.ID, st)
         self.accept = False
 
     @staticmethod
@@ -43,6 +43,7 @@ def proc_lr_table(text: str):
 def parse_part(st_num: int, part: str, res: ProcResult):
     """
     对每一个part都生成一个ProcResult
+    :param res:
     :param st_num:
     :param part:
     :return:
@@ -52,7 +53,7 @@ def parse_part(st_num: int, part: str, res: ProcResult):
         return None
     # print("part:\n{}".format(part))
     if part == "$end  accept":
-        return  res.end_acc(st_num) # 生成一条接受符号
+        return res.end_acc(st_num)  # 生成一条接受符号
     if "shift" in part:  # Token shift state
         for line in part.splitlines():
             tk, st = line.strip().split("shift")
@@ -99,7 +100,14 @@ def sym_reflect(sym: str):
     return None
 
 
-DEBUG = 1
+DEBUG = 0
+
+f = open("lr_table.txt", "r")
+text = f.read()
+lst = proc_lr_table(text)
+for p in lst:
+    for ele in p.reduce_table:
+        print("ActionKey({},{}):ActionVal({},{}),".format(p.state_now, ele, "Operation.REDUCE", p.reduce_table[ele]))
 
 
 class TestUtils(TestCase):
@@ -137,5 +145,3 @@ class TestUtils(TestCase):
             # state 14： ID  reduce  9
             oup = results[14].reduce_table.get(TokenType.ID)
             assert oup == 9, f"Err: expected={9}, got={oup}"
-
-

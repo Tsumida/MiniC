@@ -906,4 +906,3 @@ state 100
 	selection_stmt : IF LPAREN expression RPAREN statement ELSE statement .  (30)
 
 	.  reduce 30
-

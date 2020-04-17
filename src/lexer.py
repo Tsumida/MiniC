@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 # std 库
 import re
 from unittest import TestCase
@@ -78,7 +79,7 @@ def scan(code: str):
             i += 1
         token += wordTable
     token.append(Token("$", TokenType.EOF))  # 整个代码程序的终结符
-    print(token)
+    # print(token)
     return token
 
 
