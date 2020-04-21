@@ -1,4 +1,4 @@
-from sym_def import TokenType, ActionVal, ActionKey, Operation
+from  sym_def import TokenType, ActionVal, ActionKey, Operation
 
 ActionTable = {
     ActionKey(0, TokenType.INT): ActionVal(Operation.SHIFT, 1),

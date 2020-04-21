@@ -33,6 +33,9 @@ class TokenType(Enum):
     ID = 26
     NUM = 27
 
+    def __eq__(self, other):
+        return self.value == other.value and self.name == other.name
+
 
 class Token:
     def __init__(self, name, token_type):
@@ -108,6 +111,8 @@ class NonTerminal(Enum):
     var = 27
     var_declaration = 28
 
+    def __eq__(self, other):
+        return self.value == other.value and self.name == other.name
 
 def create_nts():
     """
@@ -117,31 +122,6 @@ def create_nts():
     with open("./syntax.txt", "r") as f:
         for index, nt in enumerate(f.readlines()):
             print("{} = {},".format(nt.strip(), index))
-
-
-class ActionException(Exception):
-    def __init__(self, st: int, nt, msg: str):
-        self.nt = nt
-        self.st = st
-        self.msg = msg
-
-    def __repr__(self):
-        return f"ActionException({self.st}, {self.nt}):{self.msg}"
-
-
-class ActionTable:
-    def __init__(self):
-        self.table = dict()
-
-    def add_nt(self, st: int, nt: str, op: int, next_st: int):
-        self.table.setdefault((st, nt), (op, next_st))
-
-    def get_next_action(self, st: int, nt: str):
-        try:
-            return self.table[(st, nt)]
-        except KeyError:
-            raise ActionException(st, nt, "No such entry")
-
 
 class GotoKey:
     def __init__(self, stateID, nonTerminalType):
@@ -166,14 +146,24 @@ class ActionKey:
     def __hash__(self):
         return self.stateID * 1000000000 + self.tokenType.value
 
+    def __repr__(self):
+        return f"ActionKey({self.stateID}, {self.tokenType})"
+
 
 class ActionVal:
     def __init__(self, operation, num):
         self.operation = operation
         self.num = num
 
+    def __repr__(self):
+        return f"ActionVal({self.operation}, {self.num})"
+
 
 class BNF:
     def __init__(self, symbol, expression):
         self.symbol = symbol
         self.expression = expression
+
+    def __repr__(self):
+        return f"BNF: {self.symbol} -> {self.expression}"
+

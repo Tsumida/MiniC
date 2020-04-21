@@ -2,7 +2,6 @@ from unittest import TestCase, skipIf
 
 from sym_def import *
 
-
 class ProcResult:
     def __init__(self, st: int):
         self.state_now = st
@@ -16,7 +15,6 @@ class ProcResult:
         pr = ProcResult(st)
         pr.accept = True
         return pr
-
 
 def proc_lr_table(text: str):
     """
@@ -100,15 +98,20 @@ def sym_reflect(sym: str):
     return None
 
 
+def gen_action_table():
+    """
+    打印action表内容
+    :return:
+    """
+    f = open("lr_table.txt", "r")
+    text = f.read()
+    lst = proc_lr_table(text)
+    for p in lst:
+        for ele in p.reduce_table:
+            print("ActionKey({},{}):ActionVal({},{}),".format(p.state_now, ele, "Operation.REDUCE", p.reduce_table[ele]))
+
+
 DEBUG = 0
-
-f = open("lr_table.txt", "r")
-text = f.read()
-lst = proc_lr_table(text)
-for p in lst:
-    for ele in p.reduce_table:
-        print("ActionKey({},{}):ActionVal({},{}),".format(p.state_now, ele, "Operation.REDUCE", p.reduce_table[ele]))
-
 
 class TestUtils(TestCase):
     @skipIf(DEBUG == 0, "debug")
