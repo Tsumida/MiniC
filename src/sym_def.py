@@ -1,4 +1,24 @@
 # -*- coding: UTF-8 -*-
+
+"""
+Author: 黄涛
+该模块定义了编译器所需的符号，如：
+    TokenType, 词法单元类型
+    Token, 包含词法单元及其类型
+    letters, 字母表
+
+    KEYWORD, 一个字典, 提供TinyC的关键字到其TokenType的元素
+    OPERATOR, 一个字典, 提供TinyC的运算符到其TokenType的元素
+    DELIMITER, 一个字典, 提供TinyC的界限符到其TokenType的元素
+
+    NonTerminal，非终结符
+    ActionKey, 用作LR分析表中的Action表的Key
+    ActionVal
+    GotoKey, Goto表的key
+    BNF, 代表一个产生式
+"""
+
+
 from enum import Enum
 
 
@@ -114,16 +134,11 @@ class NonTerminal(Enum):
     def __eq__(self, other):
         return self.value == other.value and self.name == other.name
 
-def create_nts():
-    """
-    Python没有宏
-    :return:
-    """
-    with open("./syntax.txt", "r") as f:
-        for index, nt in enumerate(f.readlines()):
-            print("{} = {},".format(nt.strip(), index))
 
 class GotoKey:
+    """
+    Goto表的Key
+    """
     def __init__(self, stateID, nonTerminalType):
         self.stateID = stateID
         self.nonTerminalType = nonTerminalType
@@ -136,6 +151,9 @@ class GotoKey:
 
 
 class ActionKey:
+    """
+    Action table的key
+    """
     def __init__(self, stateID, tokenType):
         self.stateID = stateID
         self.tokenType = tokenType
@@ -151,6 +169,9 @@ class ActionKey:
 
 
 class ActionVal:
+    """
+    Action table的value
+    """
     def __init__(self, operation, num):
         self.operation = operation
         self.num = num
@@ -160,6 +181,9 @@ class ActionVal:
 
 
 class BNF:
+    """
+    代表一个产生式: symbol -> expression
+    """
     def __init__(self, symbol, expression):
         self.symbol = symbol
         self.expression = expression

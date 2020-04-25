@@ -1,4 +1,7 @@
-# 2020-04-21
+"""
+Author: 杨慧志
+该模块是TinyC编译器的入口程序，包含了编译器的完整过程和命令行界面工具。
+"""
 from typing import List
 import sys
 import click
@@ -16,7 +19,6 @@ def scanner(src_path: str) -> List[Token]:
 
 
 def syntax_checker(tks: List[Token]):
-
     print("parsing tokens...")
     try:
         t = LRParse(tks)
@@ -31,19 +33,16 @@ def syntax_checker(tks: List[Token]):
 @click.option("--path", help="path of source.", required=True)
 def main(path: str):
     """
-    scanning:
-        python compiler.py -s --path=./src.txt
-
+    命令行接口， 使用click工具构建
     scanning + parsing
-        python compiler.py -p --path=./src.txt
-
-    compiling: scanning + parsing + code generating
-        python compiler.py -c --path=./src.txt
+        python ./src/compiler.py -s --path=./tests/test_regular.txt
 
     :return:
     """
 
     tks = scanner(path)
-    synt = syntax_checker(tks)
+    syntax_checker(tks)
+
 
 main()
+

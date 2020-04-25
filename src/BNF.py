@@ -1,5 +1,8 @@
 from sym_def import BNF, TokenType, NonTerminal
 
+"""
+产生式列表，用来构建语法树
+"""
 ExpressionTable = [
     BNF(-1, (-1)),  # 占用YACC第0条生成式的下标
     BNF(

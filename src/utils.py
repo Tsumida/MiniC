@@ -1,8 +1,16 @@
+"""
+author: 杨慧志
+这个模块用于从yacc产生的v文件中构建Action, goto表。
+"""
+
 from unittest import TestCase, skipIf
 
 from sym_def import *
 
 class ProcResult:
+    """
+    每个ProcResult对应LALR(1)自动机的一个状态，用来构建ActionTable, GOTO table.
+    """
     def __init__(self, st: int):
         self.state_now = st
         self.action_table = dict()  # K = TokenType, V = int
@@ -12,6 +20,11 @@ class ProcResult:
 
     @staticmethod
     def end_acc(st: int):
+        """
+        产生accept指令
+        :param st:
+        :return:
+        """
         pr = ProcResult(st)
         pr.accept = True
         return pr
@@ -111,11 +124,16 @@ def gen_action_table():
             print("ActionKey({},{}):ActionVal({},{}),".format(p.state_now, ele, "Operation.REDUCE", p.reduce_table[ele]))
 
 
+# debug标记, 用来选择性执行单元测试
 DEBUG = 0
 
 class TestUtils(TestCase):
     @skipIf(DEBUG == 0, "debug")
     def test_sym_reflect(self):
+        """
+        测试: 通过字符串反射得到对象
+        :return:
+        """
         case = [
             ("PLUS", TokenType.PLUS),
             ("LBRACE", TokenType.LBRACE),
@@ -133,8 +151,11 @@ class TestUtils(TestCase):
 
     @skipIf(DEBUG == 0, "debug")
     def test_proc_lr_table(self):
-        # 对 lr table 进行测试
-        with open("./lr_table.txt", "r") as f:
+        """
+        从文件读入lr_table，将其解析为Token的列表
+        :return:
+        """
+        with open("../meta/lr_table.txt", "r") as f:
             text = f.read()
             results = proc_lr_table(text)
             """

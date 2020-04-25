@@ -1,3 +1,7 @@
+"""
+Author: 黄涛
+"""
+
 from action_table import *
 from goto_table import *
 from BNF import *
@@ -26,6 +30,9 @@ class SyntaxTree:
 
 
 class LRParsingErr(Exception):
+    """
+    错误类，包含了提示信息，出错的位置和符号
+    """
     def __init__(self, pos: int, sym, msg: str):
         self.pos = pos  # index of sym in TokenList.
         self.sym = sym  # token or non-terminal
