@@ -7,10 +7,10 @@ import sys
 import click
 
 from PyQt5.QtWidgets import \
-    QApplication, QMainWindow,QTableWidgetItem, QAbstractItemView
+    QApplication, QMainWindow,QTableWidgetItem, QFileDialog
 
 from sym_def import Token
-from lexer import lex
+from lexer import scan, pre_process
 import syntax_analysis
 from syntax_analysis import LRParse
 
@@ -65,26 +65,59 @@ class MainWindowCtrl(QMainWindow):
         self.tks = None
         self.syntax_tree = None
 
-
     def prepare_ui(self):
+        """
+        用于初始化，令各个组件监听特定事件。
+        :return:
+        """
         self.main_ui.setupUi(self)
         self.main_ui.results.currentChanged.connect(self.slot_result_tab_changed)
+        self.main_ui.actionOpenFile.triggered.connect(self.load_src)
+
+    def load_src(self):
+        """
+        读取源代码文件，更新相关状态变量。
+        :return:
+        """
+        fdl = QFileDialog()
+        path, _ = fdl.getOpenFileName(self, "load source", "../tests", "All Files (*)")
+        print(path)
+        with open(path, "r") as f:
+            self.text = f.read()
+            self.path = path
+
+        if self.text:
+            self.main_ui.source.setPlainText(self.text)
+
+    def reset_state(self):
+        """
+        重置所有状态
+        :return:
+        """
+        self.path = None
+        self.text = None
+        self.tks = None
+        self.syntax_tree = None
+        print("state reset.")
 
     def result_lexer_update(self):
         """
         显示Token列表
         :return:
         """
-        if not self.tks or len(self.tks) == 0:
-            self.tks = lex("../tests/test_regular.txt")
-
+        if not self.text:
+            return
+        self.tks = scan(pre_process(self.text))
+        print(self.tks)
         cnt = len(self.tks)
         tl = self.main_ui.token_list
+        tl.setColumnCount(2)
+        tl.setHorizontalHeaderLabels(["符号", "类型"])
         tl.setRowCount(cnt)
         for i, tk in enumerate(self.tks):
             tl.setItem(i, 0, QTableWidgetItem(f"{tk.name}"))
             tl.setItem(i, 1, QTableWidgetItem(f"{tk.type}"))
-        # tl.setEditTriggers(QTableWidgetItem.NoEditTriggers)
+        tl.resizeColumnsToContents()
 
     def result_parser_update(self):
         """

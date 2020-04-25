@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPlainTextEdit" name="plainTextEdit">
+   <widget class="QPlainTextEdit" name="source">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -30,13 +30,7 @@
      </font>
     </property>
     <property name="plainText">
-     <string>int gcd(int a , int b){
-	if ( b != 0)
-	    return gcd( b , a - a / b * b);
-	else
-	    return a;
-}
-</string>
+     <string/>
     </property>
    </widget>
    <widget class="QTabWidget" name="results">

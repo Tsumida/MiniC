@@ -14,13 +14,14 @@ class Ui_MainWindow(object):
         MainWindow.resize(1009, 850)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.plainTextEdit = QtWidgets.QPlainTextEdit(self.centralwidget)
-        self.plainTextEdit.setGeometry(QtCore.QRect(20, 50, 451, 741))
+        self.source = QtWidgets.QPlainTextEdit(self.centralwidget)
+        self.source.setGeometry(QtCore.QRect(20, 50, 451, 741))
         font = QtGui.QFont()
         font.setFamily("Consolas")
         font.setPointSize(11)
-        self.plainTextEdit.setFont(font)
-        self.plainTextEdit.setObjectName("plainTextEdit")
+        self.source.setFont(font)
+        self.source.setPlainText("")
+        self.source.setObjectName("source")
         self.results = QtWidgets.QTabWidget(self.centralwidget)
         self.results.setGeometry(QtCore.QRect(480, 10, 511, 781))
         self.results.setObjectName("results")
@@ -29,9 +30,8 @@ class Ui_MainWindow(object):
         self.token_list = QtWidgets.QTableWidget(self.tab_lexer)
         self.token_list.setGeometry(QtCore.QRect(10, 20, 471, 741))
         self.token_list.setObjectName("token_list")
-        self.token_list.setColumnCount(2)
+        self.token_list.setColumnCount(0)
         self.token_list.setRowCount(0)
-        self.token_list.setHorizontalHeaderLabels(["符号", "类型"])
         self.results.addTab(self.tab_lexer, "")
         self.tab_parser = QtWidgets.QWidget()
         self.tab_parser.setObjectName("tab_parser")
@@ -60,13 +60,6 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.plainTextEdit.setPlainText(_translate("MainWindow", "int gcd(int a , int b){\n"
-"    if ( b != 0)\n"
-"        return gcd( b , a - a / b * b);\n"
-"    else\n"
-"        return a;\n"
-"}\n"
-""))
         self.results.setTabText(self.results.indexOf(self.tab_lexer), _translate("MainWindow", "词法分析"))
         self.results.setTabText(self.results.indexOf(self.tab_parser), _translate("MainWindow", "语法分析"))
         self.results.setTabText(self.results.indexOf(self.tab_code_gen), _translate("MainWindow", "代码生成"))
