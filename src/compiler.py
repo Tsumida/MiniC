@@ -7,7 +7,10 @@ import sys
 import click
 
 from PyQt5.QtWidgets import \
-    QApplication, QMainWindow,QTableWidgetItem, QFileDialog, QTreeWidget, QTreeWidgetItem
+    QApplication, QMainWindow,QTableWidgetItem, \
+    QFileDialog, QTreeWidget, QTreeWidgetItem, QHeaderView
+
+from PyQt5.QtGui import QBrush, QColor
 
 from sym_def import Token
 from lexer import scan, pre_process
@@ -49,6 +52,9 @@ from ui.main_body import *
 from ui.ui_parser import *
 from ui.ui_lexer import *
 
+# ==============================
+COLOR_LIGHT_PINK = (255,182,193)
+COLOR_PaleGreen = (152,251,152)
 
 class MainWindowCtrl(QMainWindow):
     def __init__(self):
@@ -64,6 +70,9 @@ class MainWindowCtrl(QMainWindow):
         # core
         self.tks = None
         self.syntax_tree = None
+
+        # for ui
+        self.root_item = None  # 保存起来, 不用每次都重新生成
 
 
     def prepare_ui(self):
@@ -101,6 +110,7 @@ class MainWindowCtrl(QMainWindow):
         self.text = None
         self.tks = None
         self.syntax_tree = None
+        self.root_item = None
         print("state reset.")
 
     def result_lexer_update(self):
@@ -140,16 +150,25 @@ class MainWindowCtrl(QMainWindow):
                 print("miniC exited.")
                 exit(-1)
 
-        root_item = QTreeWidgetItem()
-        root_item.setText(0, str(self.syntax_tree.root.character))
-        root_item.setExpanded(False)
-        self.show_childrens(self.syntax_tree.root, root_item)
+        if not self.root_item:
+            root_item = QTreeWidgetItem()
+            root_item.setText(0, str(self.syntax_tree.root.character))
+            root_item.setExpanded(False)
+            self.show_childrens(self.syntax_tree.root, root_item)
+            self.root_item = root_item
+            print("lrp...")
 
         stw = self.main_ui.stree_widget
         stw.setColumnCount(1)
         stw.setHeaderLabels(["符号"])
-        stw.addTopLevelItem(root_item)
-        stw.show()
+
+        # 添加水平滚动
+        stw.header().setSectionResizeMode(QHeaderView.ResizeToContents)
+        stw.header().setStretchLastSection(False)
+
+        stw.addTopLevelItem(self.root_item)
+        stw.expandAll()
+        # stw.show()
 
     def show_childrens(self, tree_node, tree_item: QTreeWidgetItem):
         """
@@ -158,9 +177,13 @@ class MainWindowCtrl(QMainWindow):
         """
         if not tree_node:
             return
+        br = QBrush(QColor(*COLOR_PaleGreen))
+
         for child in tree_node.children:
             node_item = QTreeWidgetItem()
             node_item.setText(0, f"{child.character}")
+            if isinstance(child.character, Token):
+                node_item.setBackground(0, br)
             tree_item.addChild(node_item)
             self.show_childrens(child, node_item)
 
