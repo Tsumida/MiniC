@@ -49,8 +49,6 @@ def cli(path: str):
     syntax_checker(tks)
 
 from ui.main_body import *
-from ui.ui_parser import *
-from ui.ui_lexer import *
 
 # ==============================
 COLOR_LIGHT_PINK = (255,182,193)
@@ -60,8 +58,6 @@ class MainWindowCtrl(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         self.main_ui = Ui_MainWindow()
-        self.tks_ui = Ui_Lexer()
-        self.parser_ui = Ui_Parser()
 
         # files
         self.text = ""
@@ -158,7 +154,6 @@ class MainWindowCtrl(QMainWindow):
             root_item.setExpanded(False)
             self.show_childrens(self.syntax_tree.root, root_item)
             self.root_item = root_item
-            print("lrp...")
 
         stw = self.main_ui.stree_widget
         stw.setColumnCount(1)
@@ -174,7 +169,7 @@ class MainWindowCtrl(QMainWindow):
 
     def show_childrens(self, tree_node, tree_item: QTreeWidgetItem):
         """
-        语法分析界面中，点击某一项将展示一个嵌套的列表
+        递归先序遍历构建QTreeWidgetItem树
         :return:
         """
         if not tree_node:
@@ -205,6 +200,7 @@ class MainWindowCtrl(QMainWindow):
 
 
 def gui():
+    QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     app = QApplication(sys.argv)
     ctrl = MainWindowCtrl()
     ctrl.prepare_ui()
