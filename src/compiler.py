@@ -8,7 +8,7 @@ import click
 
 from PyQt5.QtWidgets import \
     QApplication, QMainWindow,QTableWidgetItem, \
-    QFileDialog, QTreeWidget, QTreeWidgetItem, QHeaderView
+    QFileDialog, QTreeWidgetItem, QHeaderView
 
 from PyQt5.QtGui import QBrush, QColor
 
@@ -84,6 +84,8 @@ class MainWindowCtrl(QMainWindow):
         self.main_ui.results.currentChanged.connect(self.slot_result_tab_changed)
         self.main_ui.actionOpenFile.triggered.connect(self.load_src)
 
+        self.main_ui.results.setCurrentIndex(0)
+
     def load_src(self):
         """
         读取源代码文件，更新相关状态变量。
@@ -99,7 +101,7 @@ class MainWindowCtrl(QMainWindow):
 
         if self.text:
             self.main_ui.source.setPlainText(self.text)
-            # self.main_ui.results.tabBarClicked(0).emit()
+            self.result_lexer_update()
 
     def reset_state(self):
         """
