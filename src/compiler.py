@@ -7,7 +7,7 @@ import sys
 import click
 
 from PyQt5.QtWidgets import \
-    QApplication, QMainWindow,QTableWidgetItem, QFileDialog
+    QApplication, QMainWindow,QTableWidgetItem, QFileDialog, QTreeWidget, QTreeWidgetItem
 
 from sym_def import Token
 from lexer import scan, pre_process
@@ -65,6 +65,7 @@ class MainWindowCtrl(QMainWindow):
         self.tks = None
         self.syntax_tree = None
 
+
     def prepare_ui(self):
         """
         用于初始化，令各个组件监听特定事件。
@@ -79,6 +80,7 @@ class MainWindowCtrl(QMainWindow):
         读取源代码文件，更新相关状态变量。
         :return:
         """
+        self.reset_state()
         fdl = QFileDialog()
         path, _ = fdl.getOpenFileName(self, "load source", "../tests", "All Files (*)")
         print(path)
@@ -88,6 +90,7 @@ class MainWindowCtrl(QMainWindow):
 
         if self.text:
             self.main_ui.source.setPlainText(self.text)
+            # self.main_ui.results.tabBarClicked(0).emit()
 
     def reset_state(self):
         """
@@ -108,7 +111,7 @@ class MainWindowCtrl(QMainWindow):
         if not self.text:
             return
         self.tks = scan(pre_process(self.text))
-        print(self.tks)
+        # print(self.tks)
         cnt = len(self.tks)
         tl = self.main_ui.token_list
         tl.setColumnCount(2)
@@ -128,7 +131,38 @@ class MainWindowCtrl(QMainWindow):
         if not self.tks or len(self.tks) == 0:
             return
         if not self.syntax_tree: # or tks changed.
-            self.syntax_tree = LRParse(self.tks)
+            print("parsing tokens...")
+            try:
+                t = LRParse(self.tks)
+                self.syntax_tree = t
+            except syntax_analysis.LRParsingErr as lre:
+                print("catch LRParsingErr:\n", lre)
+                print("miniC exited.")
+                exit(-1)
+
+        root_item = QTreeWidgetItem()
+        root_item.setText(0, str(self.syntax_tree.root.character))
+        root_item.setExpanded(False)
+        self.show_childrens(self.syntax_tree.root, root_item)
+
+        stw = self.main_ui.stree_widget
+        stw.setColumnCount(1)
+        stw.setHeaderLabels(["符号"])
+        stw.addTopLevelItem(root_item)
+        stw.show()
+
+    def show_childrens(self, tree_node, tree_item: QTreeWidgetItem):
+        """
+        语法分析界面中，点击某一项将展示一个嵌套的列表
+        :return:
+        """
+        if not tree_node:
+            return
+        for child in tree_node.children:
+            node_item = QTreeWidgetItem()
+            node_item.setText(0, f"{child.character}")
+            tree_item.addChild(node_item)
+            self.show_childrens(child, node_item)
 
 
     def slot_result_tab_changed(self):

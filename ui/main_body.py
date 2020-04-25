@@ -35,6 +35,9 @@ class Ui_MainWindow(object):
         self.results.addTab(self.tab_lexer, "")
         self.tab_parser = QtWidgets.QWidget()
         self.tab_parser.setObjectName("tab_parser")
+        self.stree_widget = QtWidgets.QTreeWidget(self.tab_parser)
+        self.stree_widget.setGeometry(QtCore.QRect(0, 10, 501, 751))
+        self.stree_widget.setObjectName("stree_widget")
         self.results.addTab(self.tab_parser, "")
         self.tab_code_gen = QtWidgets.QWidget()
         self.tab_code_gen.setObjectName("tab_code_gen")
@@ -54,7 +57,7 @@ class Ui_MainWindow(object):
         self.file.addAction(self.menuFile.menuAction())
 
         self.retranslateUi(MainWindow)
-        self.results.setCurrentIndex(0)
+        self.results.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

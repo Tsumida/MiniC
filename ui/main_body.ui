@@ -43,7 +43,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab_lexer">
      <attribute name="title">
@@ -64,6 +64,16 @@
      <attribute name="title">
       <string>语法分析</string>
      </attribute>
+     <widget class="QTreeWidget" name="stree_widget">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>10</y>
+        <width>501</width>
+        <height>751</height>
+       </rect>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_code_gen">
      <attribute name="title">

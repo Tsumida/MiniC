@@ -56,6 +56,9 @@ class TokenType(Enum):
     def __eq__(self, other):
         return self.value == other.value and self.name == other.name
 
+    def __str__(self):
+        return self.name
+
 
 class Token:
     def __init__(self, name, token_type):
@@ -133,6 +136,9 @@ class NonTerminal(Enum):
 
     def __eq__(self, other):
         return self.value == other.value and self.name == other.name
+
+    def __str__(self):
+        return self.name
 
 
 class GotoKey:
