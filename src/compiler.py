@@ -6,6 +6,7 @@ from typing import List
 import sys
 import click
 
+
 from PyQt5.QtWidgets import \
     QApplication, QMainWindow,QTableWidgetItem, \
     QFileDialog, QTreeWidgetItem, QHeaderView
@@ -14,41 +15,9 @@ from PyQt5.QtGui import QBrush, QColor
 
 from sym_def import Token
 from lexer import scan, pre_process
-import syntax_analysis
-from syntax_analysis import LRParse
+from syntax_analysis import LRParse, LRParsingErr
 
-
-def scanner(src_path: str) -> List[Token]:
-    print("scanning source...")
-    return lex(src_path)
-
-
-def syntax_checker(tks: List[Token]):
-    print("parsing tokens...")
-    try:
-        t = LRParse(tks)
-        t.dfs_print()
-    except syntax_analysis.LRParsingErr as lre:
-        print("catch LRParsingErr:\n", lre)
-        print("miniC exited.")
-        exit(-1)
-
-
-@click.command()
-@click.option("--path", help="path of source.", required=True)
-def cli(path: str):
-    """
-    命令行接口， 使用click工具构建
-    scanning + parsing
-        python ./src/compiler.py -s --path=./tests/test_regular.txt
-
-    :return:
-    """
-
-    tks = scanner(path)
-    syntax_checker(tks)
-
-from ui.main_body import *
+from ui import *
 
 # ==============================
 COLOR_LIGHT_PINK = (255,182,193)
@@ -143,7 +112,7 @@ class MainWindowCtrl(QMainWindow):
             try:
                 t = LRParse(self.tks)
                 self.syntax_tree = t
-            except syntax_analysis.LRParsingErr as lre:
+            except LRParsingErr as lre:
                 print("catch LRParsingErr:\n", lre)
                 print("miniC exited.")
                 exit(-1)
@@ -200,7 +169,6 @@ class MainWindowCtrl(QMainWindow):
 
 
 def gui():
-    QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     app = QApplication(sys.argv)
     ctrl = MainWindowCtrl()
     ctrl.prepare_ui()
