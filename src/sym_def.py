@@ -1,24 +1,4 @@
 # -*- coding: UTF-8 -*-
-
-"""
-Author: 黄涛
-该模块定义了编译器所需的符号，如：
-    TokenType, 词法单元类型
-    Token, 包含词法单元及其类型
-    letters, 字母表
-
-    KEYWORD, 一个字典, 提供TinyC的关键字到其TokenType的元素
-    OPERATOR, 一个字典, 提供TinyC的运算符到其TokenType的元素
-    DELIMITER, 一个字典, 提供TinyC的界限符到其TokenType的元素
-
-    NonTerminal，非终结符
-    ActionKey, 用作LR分析表中的Action表的Key
-    ActionVal
-    GotoKey, Goto表的key
-    BNF, 代表一个产生式
-"""
-
-
 from enum import Enum
 
 
@@ -53,9 +33,6 @@ class TokenType(Enum):
     ID = 26
     NUM = 27
 
-    def __eq__(self, other):
-        return self.value == other.value and self.name == other.name
-
 
 class Token:
     def __init__(self, name, token_type):
@@ -72,9 +49,9 @@ class Token:
 
 # 字母
 letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+-*/<>()[]{}!="
-
-# 保留字
 KEYWORD = {'if': TokenType.IF, 'else': TokenType.ELSE,
+
+           # 保留字
            'int': TokenType.INT, 'return': TokenType.RETURN,
            'void': TokenType.VOID, "while": TokenType.WHILE
            }
@@ -131,14 +108,68 @@ class NonTerminal(Enum):
     var = 27
     var_declaration = 28
 
-    def __eq__(self, other):
-        return self.value == other.value and self.name == other.name
+
+class Kind(Enum):
+    EmptyK = -1
+    StK = -2
+    IfK = 0
+    WhileK = 1
+    AssignK = 2
+    OpK = 3
+    NumK = 4
+    IdK = 5
+    ArrayK = 6
+    ArgsK = 7
+    CallK = 8
+    ReturnK = 9
+    IfElseK = 10
+    IdOfArrayK = 11
+    VarDefK = 12
+    AllVarDefK = 13
+    TypeNameK = 14
+    ParamK = 15
+    AllParamDefK = 16
+    ParamArrayK = 17
+    FunDefK = 18
+    AllK = 19
+    FunIDK = 20
+    CompoundK = 21
+
+def create_nts():
+    """
+    Python没有宏
+    :return:
+    """
+    with open("./syntax.txt", "r") as f:
+        for index, nt in enumerate(f.readlines()):
+            print("{} = {},".format(nt.strip(), index))
+
+
+class ActionException(Exception):
+    def __init__(self, st: int, nt, msg: str):
+        self.nt = nt
+        self.st = st
+        self.msg = msg
+
+    def __repr__(self):
+        return f"ActionException({self.st}, {self.nt}):{self.msg}"
+
+
+class ActionTable:
+    def __init__(self):
+        self.table = dict()
+
+    def add_nt(self, st: int, nt: str, op: int, next_st: int):
+        self.table.setdefault((st, nt), (op, next_st))
+
+    def get_next_action(self, st: int, nt: str):
+        try:
+            return self.table[(st, nt)]
+        except KeyError:
+            raise ActionException(st, nt, "No such entry")
 
 
 class GotoKey:
-    """
-    Goto表的Key
-    """
     def __init__(self, stateID, nonTerminalType):
         self.stateID = stateID
         self.nonTerminalType = nonTerminalType
@@ -151,9 +182,6 @@ class GotoKey:
 
 
 class ActionKey:
-    """
-    Action table的key
-    """
     def __init__(self, stateID, tokenType):
         self.stateID = stateID
         self.tokenType = tokenType
@@ -164,30 +192,14 @@ class ActionKey:
     def __hash__(self):
         return self.stateID * 1000000000 + self.tokenType.value
 
-    def __repr__(self):
-        return f"ActionKey({self.stateID}, {self.tokenType})"
-
 
 class ActionVal:
-    """
-    Action table的value
-    """
     def __init__(self, operation, num):
         self.operation = operation
         self.num = num
 
-    def __repr__(self):
-        return f"ActionVal({self.operation}, {self.num})"
-
 
 class BNF:
-    """
-    代表一个产生式: symbol -> expression
-    """
     def __init__(self, symbol, expression):
         self.symbol = symbol
         self.expression = expression
-
-    def __repr__(self):
-        return f"BNF: {self.symbol} -> {self.expression}"
-
