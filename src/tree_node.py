@@ -10,3 +10,6 @@ class nTreeNode:
         self.character = character
         self.children = []
         self.sibling = []
+        self.type = ''
+        self.val = 0
+        self.isarray = 0

@@ -4,6 +4,7 @@ from BNF import *
 from stack import *
 from tree_node import *
 import lexer
+import BuildSymTab
 from sym_def import Token, Operation, ActionVal, ActionKey, GotoKey, Kind
 
 
@@ -23,7 +24,7 @@ def LRParse(TokenList):
             NowActionVal = ActionTable[ActionKey(StateStack.top(), TokenType.OTHERS)]
             flag = True
         else:
-            print("UNEXPECTED TOKEN: {} {}".format(token.name, pos))
+            print("TokenType Error: Unexpected token: {} {}".format(token.name, pos))
             break
         if flag:
             action, ID = NowActionVal.operation, NowActionVal.num
@@ -45,6 +46,7 @@ def LRParse(TokenList):
                 NowGotoKey = GotoKey(StateStack.top(), ReduceExp.symbol)
                 tmpChildList.reverse()  # 出栈顺序是逆序，需要反转
 
+                # 下面是根据各条产生式具体要求生成抽象语法树，涉及细节过多
                 if ID == 2:
                     tmpTreeNode.kind = Kind.AllK
                     for s in tmpChildList[0].sibling:
@@ -116,6 +118,7 @@ def LRParse(TokenList):
                 elif ID == 31:
                     tmpTreeNode.kind = Kind.WhileK
                     tmpTreeNode.children.append(tmpChildList[2])
+                    tmpTreeNode.children.append(tmpChildList[4])
                 elif ID == 32:
                     tmpTreeNode.kind = Kind.ReturnK
                     tmpTreeNode.character = tmpChildList[0].character
@@ -175,13 +178,13 @@ def LRParse(TokenList):
                     StateStack.push(GotoTable[NowGotoKey])  # 查找goto表是否有符合要求的Key
                     CharacterStack.push(tmpTreeNode)
                 else:
-                    print("UNKOWUN GOTO KEY: ", NowGotoKey.stateID, NowGotoKey.nonTerminalType)
+                    print("SystemError: Unknown Goto Key: ", NowGotoKey.stateID, NowGotoKey.nonTerminalType)
             # 接受
             else:
                 return CharacterStack.top()
     return None
 
-
+# 生成抽象语法树
 def dfs(root: nTreeNode, dep: int):
     if root is None:
         return
@@ -216,6 +219,8 @@ def dfs(root: nTreeNode, dep: int):
             print("Define FUN_ID: ")
         elif root.kind == Kind.CallK:
             print("CALL")
+        elif root.kind == Kind.WhileK:
+            print("WHILE")
         elif root.kind == Kind.CompoundK:
             None
         else:
@@ -235,3 +240,11 @@ if __name__ == '__main__':
     else:
         print(True)
         dfs(root, 0)
+
+        BuildSymTab.BuildSymTable(root)
+        for table in BuildSymTab.FunSymTable.values():
+            for word in table:
+                print(word.type, word.name, word.isarray, word.size)
+            print("")
+        if not BuildSymTab.ERROR:
+            BuildSymTab.CheckType(root)

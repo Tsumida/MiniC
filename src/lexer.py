@@ -1,13 +1,9 @@
 # -*- coding: UTF-8 -*-
-
-"""
-Author: 黄涛
-该模块包含了词法分析程序和相关函数。
-"""
+# std 库
 import re
-from unittest import TestCase, skipIf
+from unittest import TestCase
 from typing import List  # 给IDE提供类型提示, 无实质影响
-
+# 自定义库
 from sym_def import *
 
 
@@ -31,7 +27,7 @@ def filterResource(oldFileName):
     return ncode
 
 
-def scan(code: str) -> List[Token]:
+def scan(code: str):
     """
     扫描每个单词, 产生token序列
     :param code:
@@ -92,16 +88,19 @@ def lex(codeFile):
     return scan(code)
 
 
+def main():
+    token_array = lex("r.txt")
+    # 读入代码文件，返回Token列表
+    f1 = open('token.txt', 'w')
+    for u in token_array:
+        f1.write("{: <7} {}\n".format(u.name, u.type))
+    f1.close()
+
+
+# main()
+
 class TestScan(TestCase):
-    """
-    单元测试
-    """
-    @skipIf(True, "")
     def test_single_token(self):
-        """
-        能够单独解析每个单词
-        :return:
-        """
         def test(label: str, dic: dict):
             print("testing --- ", label)
             for k, v in dic.items():
@@ -112,12 +111,7 @@ class TestScan(TestCase):
         test("operator", OPERATOR)
         test("delimiter", DELIMITER)
 
-    @skipIf(True, "")
     def test_statement(self):
-        """
-        把语句解析为Token列表
-        :return:
-        """
         def test(label: str, state: str, ans: List[Token]):
             print("testing --- ", label)
             res = scan(state)
@@ -142,4 +136,3 @@ class TestScan(TestCase):
                 Token("$", TokenType.EOF)
             ]
         )
-
