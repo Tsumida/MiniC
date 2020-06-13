@@ -1,11 +1,9 @@
+from BNF import *
 from action_table import *
 from goto_table import *
-from BNF import *
 from stack import *
+from sym_def import Operation, ActionKey, GotoKey, Kind
 from tree_node import *
-import lexer
-import BuildSymTab
-from sym_def import Token, Operation, ActionVal, ActionKey, GotoKey, Kind
 
 
 def LRParse(TokenList):
@@ -135,6 +133,7 @@ def LRParse(TokenList):
                         tmpTreeNode.kind = Kind.IdK
                     elif ID == 57:
                         tmpTreeNode.kind = Kind.NumK
+                        tmpTreeNode.character = tmpChildList[0].character
                     else:
                         tmpTreeNode.kind = Kind.OpK
                     tmpTreeNode.character = tmpChildList[0].character
@@ -184,6 +183,7 @@ def LRParse(TokenList):
                 return CharacterStack.top()
     return None
 
+
 # 生成抽象语法树
 def dfs(root: nTreeNode, dep: int):
     if root is None:
@@ -232,19 +232,3 @@ def dfs(root: nTreeNode, dep: int):
             dfs(chl, dep)
 
 
-if __name__ == '__main__':
-    TokenList = lexer.lex("r.txt")
-    root = LRParse(TokenList)
-    if root is None:
-        print(False)
-    else:
-        print(True)
-        dfs(root, 0)
-
-        BuildSymTab.BuildSymTable(root)
-        for table in BuildSymTab.FunSymTable.values():
-            for word in table:
-                print(word.type, word.name, word.isarray, word.size)
-            print("")
-        if not BuildSymTab.ERROR:
-            BuildSymTab.CheckType(root)
