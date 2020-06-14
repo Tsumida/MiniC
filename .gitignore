@@ -4,3 +4,5 @@
 /meta
 /projdocs
 /tiny_machine
+/src/__pycache__
+/src/ui/__pycache__
