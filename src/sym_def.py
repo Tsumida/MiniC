@@ -33,6 +33,12 @@ class TokenType(Enum):
     ID = 26
     NUM = 27
 
+    def __eq__(self, other):
+        return self.value == other.value and self.name == other.name
+
+    def __str__(self):
+        return self.name
+
 
 class Token:
     def __init__(self, name, token_type):
@@ -108,6 +114,11 @@ class NonTerminal(Enum):
     var = 27
     var_declaration = 28
 
+    def __eq__(self, other):
+        return self.value == other.value and self.name == other.name
+
+    def __str__(self):
+        return self.name
 
 class Kind(Enum):
     EmptyK = -1

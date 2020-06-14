@@ -6,15 +6,14 @@ from typing import List  # 给IDE提供类型提示, 无实质影响
 # 自定义库
 from sym_def import *
 
-
-def filterResource(oldFileName):
+def pre_process(code: str) -> str:
     """
-    预处理, 去掉注释、空行.
-    :param oldFileName:
+    预处理
+    :param ncode:
+    :param code:
     :return:
     """
-    ncode = ''
-    code = ''.join(open(oldFileName, 'r').readlines())
+    ncode = ""
     newCode = re.sub(r"/\*([^\*]|(\*)*[^\*/])*(\*)*\*/", "", code)  # 去掉注释/*     */
     for line in newCode.split('\n'):
         line = line.strip()  # 对每行判断是否空
@@ -25,6 +24,13 @@ def filterResource(oldFileName):
         else:
             ncode += line + '\n'
     return ncode
+
+def filterResource(oldFileName):
+    """
+    打开文件并做预处理
+    """
+    code = ''.join(open(oldFileName, 'r').readlines())
+    return pre_process(code)
 
 
 def scan(code: str):

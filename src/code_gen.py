@@ -1,6 +1,6 @@
 # 2020-06
 from enum import Enum
-from unittest import TestCase, skipIf
+from typing import List
 
 REG_PC = 7
 
@@ -37,60 +37,18 @@ class ISA(Enum):
         return self.name
 
 
-class TMCodeGenerator:
-
-    def __init__(self, file_name="code"):
-        self.file_name = file_name
-        self.output_seq = list()
-        self.ins_num = -1
-
-    # 追加一条注释
-    def annotation(self, msg: str):
-        self.output_seq.append(
-            "" + msg
-        )
-
-    # def check_rm(self) -> bool: pass
-
-    # def check_rr(self) -> bool: pass
-
-    # style: op_code r, d(s)
-    def rm_code(self, op_code: ISA, r:int, d:int, s:int):
-        self.ins_num += 1
-        self.output_seq.append(
-            f"{self.ins_num}    {op_code}  {r},{d}({s})" # 这里，op_code 应该转为字符串
-        )
-
-    # style: op_code r, s, t
-    def rr_code(self, op_code: ISA, r: int, s:int, t: int):
-        self.ins_num += 1
-        self.output_seq.append(
-            f"{self.ins_num}    {op_code}  {r},{s},{t}" # 这里，op_code 应该转为字符串
-        )
-
-    def to_string(self):
-        return "\n".join(self.output_seq)
-
-    # 将内容转为.tm文件
-    def dump(self):
-        pass
+# 追加一条注释
+def annotation(seq: List[str], msg:str):
+    seq.append("* " + msg)
 
 
-DEBUG_TM = 1
+# style: op_code r, d(s)
+def rm_code(seq: List[str], num,  op_code:ISA, r:int, d:int, s:int):
+    seq.append(f"{num}:    {op_code}  {r},{d}({s})")
 
 
-class TestTMCode(TestCase):
+# style: op_code r, s, t
+def rr_code(seq: List[str], num:int, op_code:ISA, r:int, s:int, t:int):
+    seq.append(f"{num}:    {op_code}  {r},{s},{t}")
 
-    @skipIf(DEBUG_TM == 0, "debug")
-    def test_rr_code(self):
-        gen = TMCodeGenerator()
-        gen.rm_code(ISA.LDA, 0, 1, 2)
-        ans = "0    LDA  0,1(2)"
-        assert ans == gen.to_string()
 
-    @skipIf(DEBUG_TM == 0, "debug")
-    def test_rr_code(self):
-        gen = TMCodeGenerator()
-        gen.rr_code(ISA.ADD, 0, 1, 2)
-        ans = "0    ADD  0,1,2"
-        assert ans == gen.to_string()
