@@ -26,10 +26,17 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <layout class="QGridLayout" name="gridLayout_2" columnstretch="2,3" rowminimumheight="0,0,0,0">
+   <layout class="QGridLayout" name="gridLayout_2" columnstretch="2,3">
     <property name="sizeConstraint">
      <enum>QLayout::SetDefaultConstraint</enum>
     </property>
+    <item row="0" column="0">
+     <widget class="QPushButton" name="confirm">
+      <property name="text">
+       <string>确认</string>
+      </property>
+     </widget>
+    </item>
     <item row="1" column="0">
      <widget class="QPlainTextEdit" name="source">
       <property name="sizePolicy">
@@ -126,7 +133,7 @@
        <attribute name="title">
         <string>语法分析</string>
        </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <widget class="QTreeWidget" name="stree_widget">
           <property name="sizePolicy">
@@ -148,6 +155,13 @@
           </column>
          </widget>
         </item>
+        <item>
+         <widget class="QPushButton" name="stree_to_text">
+          <property name="text">
+           <string>文本形式</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="tab_code_gen">
@@ -166,14 +180,12 @@
        <attribute name="title">
         <string>代码生成</string>
        </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QTextEdit" name="code_gen"/>
+        </item>
+       </layout>
       </widget>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QPushButton" name="confirm">
-      <property name="text">
-       <string>确认</string>
-      </property>
      </widget>
     </item>
    </layout>

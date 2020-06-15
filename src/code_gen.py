@@ -1,11 +1,6 @@
 from tree_node import nTreeNode
 from sym_def import Kind, TokenType
 
-
-def emitComment(s: str):
-    print(" * {}".format(s))
-
-
 emitLoc = 0
 highEmitLoc = 0
 tmpOffset = 0
@@ -14,9 +9,11 @@ mp = 6
 gp = 5
 ac = 0
 ac1 = 1
-OUTPUT = []
+OUTPUT = []  # OUTPUT
 TraceCode = True
 
+def clean_code_gen():
+    OUTPUT.clear()
 
 def emitComment(s: str):
     if TraceCode:

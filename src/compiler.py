@@ -6,17 +6,19 @@ from typing import List
 import sys
 import click
 
+from code_gen import *
+
 
 from PyQt5.QtWidgets import \
     QApplication, QMainWindow,QTableWidgetItem, \
-    QFileDialog, QTreeWidgetItem, QHeaderView
+    QFileDialog, QTreeWidgetItem, QHeaderView, QDialog
 
 from PyQt5.QtGui import QBrush, QColor
 
 from sym_def import Kind
 from lexer import scan, pre_process
 # from syntax_analysis import LRParse, LRParsingErr
-from parser2 import LRParse
+from parser2 import LRParse, dfs
 from tree_node import nTreeNode
 
 from ui import *
@@ -45,7 +47,7 @@ class MainWindowCtrl(QMainWindow):
 
         # for ui
         self.root_item = None  # 保存起来, 不用每次都重新生成
-
+        self.stree_text = None
 
     def prepare_ui(self):
         """
@@ -57,6 +59,8 @@ class MainWindowCtrl(QMainWindow):
         self.main_ui.actionOpenFile.triggered.connect(self.load_src)
         self.main_ui.confirm.clicked.connect(self.result_lexer_update)
         self.main_ui.results.setCurrentIndex(0)
+        self.main_ui.stree_to_text.clicked.connect(self.stree_to_text)
+
 
     def load_src(self):
         """
@@ -143,6 +147,38 @@ class MainWindowCtrl(QMainWindow):
         stw.expandAll()
         # stw.show()
 
+    def result_code_gen_update(self):
+        if not self.syntax_tree:
+            return
+
+        clean_code_gen()
+        cgen(self.syntax_tree)
+        self.main_ui.code_gen.setText("\n".join(OUTPUT))
+
+    def stree_to_text(self):
+        if not self.syntax_tree:
+            return
+        else:
+            ori_stdout = sys.stdout
+            text = TextHolder(list())
+            try:
+                sys.stdout = text
+                dfs(self.syntax_tree, 0)
+            except Exception as e:
+                sys.stdout = ori_stdout
+                print(e)
+                return
+            sys.stdout = ori_stdout
+            self.stree_text = QDialog()
+            ui = Ui_Dialog()
+            ui.setupUi(self.stree_text )
+            ui.text_stree.setPlainText(" ".join(text.inner))
+            self.stree_text.show()
+
+            # print(text.inner)
+
+
+
     def show_childrens(self, tree_node: nTreeNode, tree_item: QTreeWidgetItem):
         """
         递归先序遍历构建QTreeWidgetItem树
@@ -183,8 +219,21 @@ class MainWindowCtrl(QMainWindow):
                 self.result_parser_update()
             except Exception as e:
                 print("meet exception", e)
+        elif i == 2:
+            self.result_code_gen_update()
         else:
-            pass
+            exit(-1)
+
+# Duck type
+class TextHolder(object):
+    def __init__(self, holder: List[str]):
+        self.inner = holder
+
+    def write(self, message):
+        self.inner.append(message)
+
+    def flush(self):
+        pass
 
 def gui():
     app = QApplication(sys.argv)
