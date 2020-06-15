@@ -1,6 +1,7 @@
 from sym_def import Kind
 from tree_node import nTreeNode
 from symtab_def import *
+
 '''
 函数表：
 key:函数名
@@ -49,6 +50,7 @@ def init():
     param_list = []
     r = SymIDNode(None)
     r.type = 'int'
+    r.size = 1
     param_list.append(r)
     q.params = param_list
     fun_information_table['output'] = q
@@ -68,7 +70,7 @@ def build_sym_table(root: nTreeNode, h):
                 q.type = ele.children[0].character.name
                 if len(ele.children) >= 3:
                     q.isarray = True
-                    q.size = 0
+                    q.size = 1
                 if has_ID(q.name, NowList):
                     print("Redefine params in function <{}> : {}".format(p.name, q.name))  # 函数中参数重名
                     ERROR = True
@@ -200,38 +202,51 @@ def CheckType(root: nTreeNode):
             CheckType(chl)
 
 
-# 每个函数体内符号占用的空间总和：参数无论什么类型都只占1个单位，新定义的变量数组占size个单位
-def need_size():
+def print_extern_and_fun_sym_table():
+    for s in fun_sym_table.keys():
+        print("FUN_ID: <{}> return type: <{}>".format(s, fun_information_table[s].type))
+        print("type name isarray size offset")
+        table = fun_sym_table[s]
+        for word in table:
+            print(word.type, word.name, word.isarray, word.size, word.offset)
+        print("\n\n")
+    if len(extern_sym_table) >= 1:
+        print("EXTERN:")
+        print("type name isarray size offset")
+        for word in extern_sym_table:
+            print(word.type, word.name, word.isarray, word.size, word.offset)
+        print("\n\n")
+
+
+def semantic_analysis(root: nTreeNode):
+    global ERROR
+    init()  # 符号表初始化
+    build_sym_table(root, 0)  # 建立符号表
+    if not ERROR:
+        CheckType(root)
+    # 每个函数体内符号占用的空间总和：参数无论什么类型都只占1个单位，新定义的变量数组占size个单位,以及各元素的偏移量
     for s in fun_sym_table.keys():
         sum = 0
         tb = fun_sym_table[s]
         for i in range(len(tb)):
+            tb[i].offset = sum
             if i < len(fun_information_table[s].params):
+                tb[i].size = 1
                 sum += 1
             elif tb[i].isarray:
                 sum += tb[i].size
             else:
                 sum += 1
         fun_cnt_size[s] = sum
-        # print(s, sum)
-
-
-def print_extern_and_fun_sym_table():
-    for s in fun_sym_table.keys():
-        print("FUN_ID: <{}> return type: <{}>".format(s, fun_information_table[s].type))
-        print("type name isarray size")
-        table = fun_sym_table[s]
-        for word in table:
-            print(word.type, word.name, word.isarray, word.size)
-        print("\n\n")
-    if len(extern_sym_table) >= 1:
-        print("EXTERN:")
-        print("type name isarray size")
-        for word in extern_sym_table:
-            print(word.type, word.name, word.isarray, word.size)
-        print("\n\n")
-
-
-# 函数表，符号表，全局变量符号表
-def get_three_table():
-    return fun_information_table, fun_sym_table, extern_sym_table
+    sum = 0
+    tb = extern_sym_table
+    for i in range(len(tb)):
+        tb[i].offset = sum
+        if tb[i].isarray:
+            sum += tb[i].size
+        else:
+            tb[i].size = 1
+            sum += 1
+    fun_cnt_size[s] = sum
+    print_extern_and_fun_sym_table()  # 打印符号表
+    return SymbolTable(fun_information_table, fun_sym_table, extern_sym_table)
