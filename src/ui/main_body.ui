@@ -26,11 +26,11 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <layout class="QGridLayout" name="gridLayout_2" columnstretch="2,3" rowminimumheight="0">
+   <layout class="QGridLayout" name="gridLayout_2" columnstretch="2,3" rowminimumheight="0,0,0,0">
     <property name="sizeConstraint">
      <enum>QLayout::SetDefaultConstraint</enum>
     </property>
-    <item row="0" column="0">
+    <item row="1" column="0">
      <widget class="QPlainTextEdit" name="source">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -58,7 +58,7 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="1">
+    <item row="1" column="1">
      <widget class="QTabWidget" name="results">
       <property name="maximumSize">
        <size>
@@ -79,7 +79,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_lexer">
        <property name="sizePolicy">
@@ -167,6 +167,13 @@
         <string>代码生成</string>
        </attribute>
       </widget>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QPushButton" name="confirm">
+      <property name="text">
+       <string>确认</string>
+      </property>
      </widget>
     </item>
    </layout>

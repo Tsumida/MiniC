@@ -41,7 +41,7 @@ class Ui_MainWindow(object):
         self.source.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
         self.source.setPlainText("")
         self.source.setObjectName("source")
-        self.gridLayout_2.addWidget(self.source, 0, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.source, 1, 0, 1, 1)
         self.results = QtWidgets.QTabWidget(self.centralwidget)
         self.results.setMaximumSize(QtCore.QSize(2000, 2000))
         self.results.setSizeIncrement(QtCore.QSize(0, 0))
@@ -101,7 +101,10 @@ class Ui_MainWindow(object):
         self.tab_code_gen.setMaximumSize(QtCore.QSize(2000, 2000))
         self.tab_code_gen.setObjectName("tab_code_gen")
         self.results.addTab(self.tab_code_gen, "")
-        self.gridLayout_2.addWidget(self.results, 0, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.results, 1, 1, 1, 1)
+        self.confirm = QtWidgets.QPushButton(self.centralwidget)
+        self.confirm.setObjectName("confirm")
+        self.gridLayout_2.addWidget(self.confirm, 0, 0, 1, 1)
         self.gridLayout_2.setColumnStretch(0, 2)
         self.gridLayout_2.setColumnStretch(1, 3)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -119,7 +122,7 @@ class Ui_MainWindow(object):
         self.file.addAction(self.menuFile.menuAction())
 
         self.retranslateUi(MainWindow)
-        self.results.setCurrentIndex(0)
+        self.results.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -128,6 +131,7 @@ class Ui_MainWindow(object):
         self.results.setTabText(self.results.indexOf(self.tab_lexer), _translate("MainWindow", "词法分析"))
         self.results.setTabText(self.results.indexOf(self.tab_parser), _translate("MainWindow", "语法分析"))
         self.results.setTabText(self.results.indexOf(self.tab_code_gen), _translate("MainWindow", "代码生成"))
+        self.confirm.setText(_translate("MainWindow", "确认"))
         self.menuFile.setTitle(_translate("MainWindow", "文件"))
         self.actionOpenFile.setText(_translate("MainWindow", "Open Source"))
         self.actionClean_Source.setText(_translate("MainWindow", "Clean Source"))

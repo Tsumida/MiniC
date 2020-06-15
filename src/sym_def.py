@@ -1,4 +1,8 @@
 # -*- coding: UTF-8 -*-
+"""
+作者: 黄涛
+修改者：黄涛，杨慧志
+"""
 from enum import Enum
 
 
@@ -134,6 +138,9 @@ class Kind(Enum):
     AllK = 19
     FunIDK = 20
     CompoundK = 21
+
+    def __str__(self):
+        return self.name
 
 def create_nts():
     """

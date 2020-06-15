@@ -1,5 +1,5 @@
 """
-Author: 杨慧志
+作者: 杨慧志
 该模块是TinyC编译器的入口程序，包含了编译器的完整过程和命令行界面工具。
 """
 from typing import List
@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import \
 
 from PyQt5.QtGui import QBrush, QColor
 
-from sym_def import Token
+from sym_def import Kind
 from lexer import scan, pre_process
 # from syntax_analysis import LRParse, LRParsingErr
 from parser2 import LRParse
@@ -25,6 +25,11 @@ from ui import *
 COLOR_LIGHT_PINK = (255,182,193)
 COLOR_PaleGreen = (152,251,152)
 
+"""
+        
+    开始 ------> 读取文件\修改文件 ------> 确认， 进行词法分析 ------> 文法分析 ------> 代码生成 
+    
+"""
 class MainWindowCtrl(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
@@ -36,7 +41,7 @@ class MainWindowCtrl(QMainWindow):
 
         # core
         self.tks = None
-        self.syntax_tree = None
+        self.syntax_tree: nTreeNode = None
 
         # for ui
         self.root_item = None  # 保存起来, 不用每次都重新生成
@@ -50,7 +55,7 @@ class MainWindowCtrl(QMainWindow):
         self.main_ui.setupUi(self)
         self.main_ui.results.currentChanged.connect(self.slot_result_tab_changed)
         self.main_ui.actionOpenFile.triggered.connect(self.load_src)
-
+        self.main_ui.confirm.clicked.connect(self.result_lexer_update)
         self.main_ui.results.setCurrentIndex(0)
 
     def load_src(self):
@@ -68,7 +73,6 @@ class MainWindowCtrl(QMainWindow):
 
         if self.text:
             self.main_ui.source.setPlainText(self.text)
-            self.result_lexer_update()
 
     def reset_state(self):
         """
@@ -117,19 +121,19 @@ class MainWindowCtrl(QMainWindow):
             #except LRParsingErr as lre:
             except Exception as lre:
                 print("catch LRParsingErr:\n", lre)
-                print("miniC exited.")
-                exit(-1)
+                return
 
         if not self.root_item:
             root_item = QTreeWidgetItem()
-            root_item.setText(0, str(self.syntax_tree.root.character))
+            root_item.setText(0, f"{self.syntax_tree.kind}, {self.syntax_tree.character}")
             root_item.setExpanded(False)
-            self.show_childrens(self.syntax_tree.root, root_item)
+
+            self.show_childrens(self.syntax_tree, root_item)
             self.root_item = root_item
 
         stw = self.main_ui.stree_widget
         stw.setColumnCount(1)
-        stw.setHeaderLabels(["符号"])
+        stw.setHeaderLabels(["抽象语法树"])
 
         # 添加水平滚动
         stw.header().setSectionResizeMode(QHeaderView.ResizeToContents)
@@ -139,23 +143,32 @@ class MainWindowCtrl(QMainWindow):
         stw.expandAll()
         # stw.show()
 
-    def show_childrens(self, tree_node, tree_item: QTreeWidgetItem):
+    def show_childrens(self, tree_node: nTreeNode, tree_item: QTreeWidgetItem):
         """
         递归先序遍历构建QTreeWidgetItem树
         :return:
         """
         if not tree_node:
             return
-        br = QBrush(QColor(*COLOR_PaleGreen))
+        # br = QBrush(QColor(*COLOR_PaleGreen))
+        iter = None
+        flag = True
+        if tree_node.kind in [Kind.ArgsK, Kind.StK, Kind.AllVarDefK, Kind.AllParamDefK, Kind.AllK]:
+            iter = tree_node.sibling
+        else:
+            iter = tree_node.children
 
-        for child in tree_node.children:
+        for child in iter :
             node_item = QTreeWidgetItem()
-            node_item.setText(0, f"{child.character}")
-            if isinstance(child.character, Token):
-                node_item.setBackground(0, br)
+            cont = f"{child.kind}  "
+            if child.character:
+                cont += f"{child.character.name}"
+
+            node_item.setText(0, cont)
+            # if isinstance(child.character, Token):
+            #    node_item.setBackground(0, br)
             tree_item.addChild(node_item)
             self.show_childrens(child, node_item)
-
 
     def slot_result_tab_changed(self):
         """
@@ -166,10 +179,12 @@ class MainWindowCtrl(QMainWindow):
         if i == 0:
             self.result_lexer_update()
         elif i == 1:
-            self.result_parser_update()
+            try:
+                self.result_parser_update()
+            except Exception as e:
+                print("meet exception", e)
         else:
             pass
-
 
 def gui():
     app = QApplication(sys.argv)
