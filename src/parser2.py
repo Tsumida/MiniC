@@ -6,7 +6,7 @@ from sym_def import Operation, ActionKey, GotoKey, Kind
 from tree_node import *
 
 
-def LRParse(TokenList) -> nTreeNode:
+def LRParse(TokenList):
     StateStack = stack()  # 状态栈
     CharacterStack = stack()  # 符号栈
     StateStack.push(0)  # 初始状态
@@ -64,7 +64,7 @@ def LRParse(TokenList) -> nTreeNode:
                 elif ID == 10:
                     tmpTreeNode.kind = Kind.FunDefK
                     tmpChildList[0].kind = Kind.TypeNameK
-                    tmpChildList[1].kind = Kind.IdK
+                    tmpChildList[1].kind = Kind.FunIDK
                     tmpTreeNode.children.append(tmpChildList[0])
                     tmpTreeNode.children.append(tmpChildList[1])
                     tmpTreeNode.children.append(tmpChildList[3])
@@ -180,9 +180,7 @@ def LRParse(TokenList) -> nTreeNode:
                     print("SystemError: Unknown Goto Key: ", NowGotoKey.stateID, NowGotoKey.nonTerminalType)
             # 接受
             else:
-                root = CharacterStack.top()
-                # dfs(root, 0)
-                return root
+                return CharacterStack.top()
     return None
 
 
