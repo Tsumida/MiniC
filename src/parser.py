@@ -63,12 +63,3 @@ def dfs(root: TreeNode, dep: int):
     for chl in root.children:
         dfs(chl, dep + 1)
 
-
-if __name__ == '__main__':
-    TokenList = lexer.lex("r.txt")
-    root = LRParse(TokenList)
-    if root is None:
-        print(False)
-    else:
-        print(True)
-        dfs(root, 0)

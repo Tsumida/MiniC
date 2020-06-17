@@ -10,8 +10,8 @@ if __name__ == '__main__':
         print(False)
     else:
         print(True)
-        parser2.dfs(root, 0)  # 打印抽象语法树
+        # parser2.dfs(root, 0)  # 打印抽象语法树
         analyse.semantic_analysis(root)
         # table = analyse.senmantic_analysis(root) 获取三个表
-        code_gen.cgen(root)
-        print(type(f))
+        if not analyse.ERROR:
+            code_gen.codegen(root)

@@ -147,6 +147,7 @@ def CheckType(root: nTreeNode):
                 if q is None:
                     q = getVal(root.character.name, extern_sym_table)
                 if q.type == 'int' and not q.isarray:
+                    assert q.type == 'int'
                     print('TypeError: var_ID<{}> is an integer type, but it has an index'.format(
                         root.character.name))  # 变量类型错误，被认为是数组
                     ERROR = True
@@ -202,6 +203,7 @@ def CheckType(root: nTreeNode):
             CheckType(chl)
 
 
+# 打印符号表
 def print_extern_and_fun_sym_table():
     for s in fun_sym_table.keys():
         print("FUN_ID: <{}> return type: <{}>".format(s, fun_information_table[s].type))
@@ -248,5 +250,8 @@ def semantic_analysis(root: nTreeNode):
             tb[i].size = 1
             sum += 1
     fun_cnt_size[s] = sum
-    print_extern_and_fun_sym_table()  # 打印符号表
+    # print_extern_and_fun_sym_table()  # 打印符号表
+    if 'main' not in fun_information_table.keys():
+        print('MainError: Not find main function')  # 没有main函数
+        ERROR = True
     return SymbolTable(fun_information_table, fun_sym_table, extern_sym_table)
