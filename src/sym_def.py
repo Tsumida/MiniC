@@ -1,6 +1,15 @@
 # -*- coding: UTF-8 -*-
 from enum import Enum
+'''
+Copyright: 
+Author: 黄涛
+Version: 1.0
+Date: 2020-03-28
+No history version
+所有符号、动作的定义
+'''
 
+# 终结符类型
 
 class TokenType(Enum):
     ERROR = -1
@@ -70,13 +79,13 @@ DELIMITER = {'{': TokenType.LBRACE, '}': TokenType.RBRACE,
              }
 
 
-# op for LR
+#LR分析表操作类型
 class Operation(Enum):
     SHIFT = 0
     REDUCE = 1
     ACCEPT = -1
 
-
+# 非终结符类型
 class NonTerminal(Enum):
     additive_expression = 0
     addop = 1
@@ -108,7 +117,7 @@ class NonTerminal(Enum):
     var = 27
     var_declaration = 28
 
-
+# 操作类型
 class Kind(Enum):
     EmptyK = -1
     StK = -2
@@ -144,7 +153,7 @@ def create_nts():
         for index, nt in enumerate(f.readlines()):
             print("{} = {},".format(nt.strip(), index))
 
-
+# 以下是构成lr分析表的键值
 class ActionException(Exception):
     def __init__(self, st: int, nt, msg: str):
         self.nt = nt
@@ -198,7 +207,7 @@ class ActionVal:
         self.operation = operation
         self.num = num
 
-
+# BNF范式表
 class BNF:
     def __init__(self, symbol, expression):
         self.symbol = symbol

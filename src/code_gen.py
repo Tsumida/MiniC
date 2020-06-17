@@ -1,7 +1,14 @@
 from tree_node import nTreeNode
 from sym_def import Kind, TokenType
 from analyse import fun_information_table, fun_sym_table, fun_cnt_size, extern_sym_table, getVal, has_ID
-
+'''
+Copyright: 
+Author: 黄涛
+Version: 1.0
+Date: 2020-06-11
+No history version
+目标代码生成
+'''
 
 # 以下这部分都是文件的
 def emitComment(s: str):
@@ -19,7 +26,7 @@ sp = 3  # 栈顶指针
 ac1 = 1
 ac2 = 2
 OUTPUT = []
-TraceCode = True
+TraceCode = True # 是否打印注释信息
 
 
 def emitComment(s: str):
@@ -98,7 +105,7 @@ def st_lookup(s: str):
         return getVal(s, extern_sym_table).offset
 
 
-# 代码生成
+# 代码生成，调用方法：cgen(root)
 
 def cgen(root: nTreeNode):
     global tmpOffset, tb

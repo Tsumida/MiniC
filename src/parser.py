@@ -5,8 +5,16 @@ from stack import *
 from tree_node import *
 import lexer
 from sym_def import Token, Operation, ActionVal, ActionKey, GotoKey
+'''
+Copyright: 
+Author: 黄涛
+Version: 1.0
+Date: 2020-04-09
+No history version
+语法分析 生成具体语法树
+'''
 
-
+# 调用：LRParse(TokenList) TokenList为符号流
 def LRParse(TokenList):
     StateStack = stack()  # 状态栈
     CharacterStack = stack()  # 符号栈

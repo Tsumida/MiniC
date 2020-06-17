@@ -1,3 +1,13 @@
+
+'''
+Copyright: 
+Author: 黄涛
+Version: 1.0
+Date: 2020-06-01
+No history version
+符号表的节点定义
+'''
+# 符号表节点定义
 class SymIDNode:
     def __init__(self, name):
         self.name = name  # 变量名
@@ -7,7 +17,7 @@ class SymIDNode:
         self.isarray = False  # 是否未一个数组
         self.offset = 0
 
-
+# 函数表节点定义
 class SymFun_IDNode:
     def __init__(self, name):
         self.name = name  # 函数名

@@ -4,6 +4,16 @@ from goto_table import *
 from stack import *
 from sym_def import Operation, ActionKey, GotoKey, Kind
 from tree_node import *
+'''
+Copyright: 
+Author: 黄涛
+Version: 2.0
+Date: 2020-04-11
+history version: 1.0 生成具体语法树
+语法分析 生成抽象语法树
+'''
+
+# 调用：LRParse(TokenList) TokenList为符号流
 
 
 def LRParse(TokenList):

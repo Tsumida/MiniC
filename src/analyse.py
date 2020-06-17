@@ -3,6 +3,18 @@ from tree_node import nTreeNode
 from symtab_def import *
 
 '''
+Copyright: 
+Author: 黄涛
+Version: 2.0
+Date: 2020-06-01
+history version:BuildSymTable 1.0
+检查变量变量是否未定义或重定义
+检查类型是否一致
+'''
+
+
+
+'''
 函数表：
 key:函数名
 val:函数名，返回值，参数列表
@@ -19,7 +31,7 @@ fun_cnt_size = {}  # 每个函数表里面所有符号需要大小总和
 extern_sym_table = []  # 全局变量表
 NowList = []  # 当前所在函数体内的符号表,过渡时用
 
-ERROR = False
+ERROR = False # 表示有没有产生错误
 
 
 # 判断列表List中是否有这个name为str的符号
