@@ -33,6 +33,19 @@ def filterResource(oldFileName):
             ncode += line + '\n'
     return ncode
 
+def pre_process(text: str) -> str:
+    ncode = ''
+    code = text
+    newCode = re.sub(r"/\*([^\*]|(\*)*[^\*/])*(\*)*\*/", "", code)  # 去掉注释/*     */
+    for line in newCode.split('\n'):
+        line = line.strip()  # 对每行判断是否空
+        line = line.replace('\\t', '')
+        line = line.replace('\\n', '')
+        if not line:
+            continue
+        else:
+            ncode += line + '\n'
+    return ncode
 
 def scan(code: str):
     """

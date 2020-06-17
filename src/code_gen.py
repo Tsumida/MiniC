@@ -28,6 +28,9 @@ ac2 = 2
 OUTPUT = []
 TraceCode = True # 是否打印注释信息
 
+def clean_code_gen():
+    OUTPUT.clear()
+
 
 def emitComment(s: str):
     if TraceCode:
