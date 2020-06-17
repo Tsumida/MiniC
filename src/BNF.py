@@ -1,5 +1,12 @@
 from sym_def import BNF, TokenType, NonTerminal
-
+'''
+Copyright: 
+Author: 黄涛
+Version: 1.0
+Date: 2020-04-09
+No history version
+此文件保存的是所有BNF范式
+'''
 ExpressionTable = [
     BNF(-1, (-1)),  # 占用YACC第0条生成式的下标
     BNF(

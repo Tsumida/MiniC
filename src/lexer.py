@@ -6,7 +6,14 @@ from typing import List  # 给IDE提供类型提示, 无实质影响
 # 自定义库
 from sym_def import *
 
-
+'''
+Copyright: 
+Author: 黄涛
+Version: 1.0
+Date: 2020-03-31
+No history version
+词法分析
+'''
 def filterResource(oldFileName):
     """
     预处理, 去掉注释、空行.

@@ -1,5 +1,12 @@
 from sym_def import NonTerminal, GotoKey
-
+'''
+Copyright: 
+Author: 黄涛
+Version: 1.0
+Date: 2020-04-09
+No history version
+此文件保存的是lr分析表中的goto表
+'''
 GotoTable = {
     GotoKey(0, NonTerminal.program): 3,
     GotoKey(0, NonTerminal.declaration_list): 4,

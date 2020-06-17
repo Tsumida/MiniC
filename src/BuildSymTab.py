@@ -2,7 +2,9 @@ from sym_def import Kind
 from tree_node import nTreeNode
 from symtab_def import *
 
-
+'''
+废弃，已更名为analyse.py
+'''
 FunInformationTable = {}  # 函数表
 FunSymTable = {}  # 所有函数体内的符号表总表s
 NowList = []  # 当前所在函数体内的符号表
