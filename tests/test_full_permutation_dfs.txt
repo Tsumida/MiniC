@@ -1,0 +1,27 @@
+/*Full Permutation dfs*/
+int a[14];
+int used[14];
+int n;
+void dfs(int f){
+    int i;i = 1;
+    if(f == n + 1){
+        while(i <= n){
+            output(a[i]);
+            i=i+1;
+        }
+        return;
+    }
+    while(i <= n){
+        if(used[i] == 0){
+            used[i] = 1;
+            a[f] = i;
+            dfs(f+1);
+            used[i] = 0;
+        }
+        i = i + 1;
+    }
+}
+void main(void){
+    n = input();
+    dfs(1);
+}

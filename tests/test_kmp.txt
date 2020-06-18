@@ -1,0 +1,56 @@
+/*KMP*/
+int next[100004];
+int a[100004];
+int b[100004];
+int la;/*length of array a*/
+int lb;/*length of array b*/
+void getKMP(void){
+    int i;int j;int t;
+    i = 2;j = 0;
+    while(i <= la){
+        while(a[i] != a[j+1]){
+            j = next[j];
+            if(j == 0){
+                t = a[i];a[i] = a[j+1];/*break*/
+            }
+        }
+        if(j == 0) a[i] = t;
+        if(a[i] == a[j+1]) j = j + 1;
+        next[i] = j;
+        i = i + 1;
+    }
+}
+int getans(void){
+    int i;int j;int t;int ans;
+    i = 1;j = 0;ans = 0;
+    while(i <= la){
+        if(j == lb) j = next[j];
+        while(a[i] != b[j+1]){
+            if(j ==0){
+                t = a[i];a[i]=b[j+1];/*break*/
+            }
+        }
+        if(j==0) a[i]=t;
+        if(a[i] == b[j+1]) j = j+1;
+        if(j == lb) ans = ans + 1;
+        i = i + 1;
+    }
+    return ans;
+}
+void main(void){
+    int i;
+    la = input();
+    i = 1;
+    while(i <= la){
+        a[i] = input();
+        i = i + 1;
+    }
+    lb = input();
+    i=1;
+    while(i <= lb){
+        b[i] = input();
+        i=i+1;
+    }
+    getKMP();
+    output(getans());
+}

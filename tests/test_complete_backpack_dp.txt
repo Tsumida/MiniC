@@ -1,0 +1,19 @@
+/*Complete Backpack dynamic programming*/
+int dp[5400];
+int a[54];
+void main(void){
+    int n;int m;int i;int j;
+    n = input();m = input();
+    i = 0;
+    while(i < n){
+        int x;
+        x = input();
+        j = x;
+        while(j <= m){
+            if(dp[j] < dp[j-m] + x)
+                dp[j] = dp[j-m] + x;
+            j = j+1;
+        }
+    }
+    output(dp[m]);
+}

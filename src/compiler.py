@@ -15,6 +15,7 @@ from PyQt5.QtWidgets import \
 
 from PyQt5.QtGui import QBrush, QColor
 
+import analyse
 from sym_def import Kind
 from lexer import scan, pre_process
 # from syntax_analysis import LRParse, LRParsingErr
@@ -152,7 +153,9 @@ class MainWindowCtrl(QMainWindow):
             return
 
         clean_code_gen()
+        analyse.semantic_analysis(self.syntax_tree)
         cgen(self.syntax_tree)
+        print("mimi")
         self.main_ui.code_gen.setText("\n".join(OUTPUT))
 
     def stree_to_text(self):
